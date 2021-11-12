@@ -17,6 +17,6 @@ libraryDependencies += "com.ideal.linked" %% "scala-common" % "0.1.0"
 libraryDependencies += "com.ideal.linked" %% "toposoid-common" % "0.1.0"
 libraryDependencies += "com.ideal.linked" %% "toposoid-knowledgebase-model" % "0.1.0"
 libraryDependencies += "com.ideal.linked" %% "toposoid-deduction-protocol-model" % "0.1.0"
-libraryDependencies += "com.ideal.linked" %% "toposoid-sentence-parser" % "0.1.0"
+libraryDependencies += "com.ideal.linked" %% "toposoid-sentence-parser-japanese" % "0.1.0"
 libraryDependencies += "io.jvm.uuid" %% "scala-uuid" % "0.3.1"
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test

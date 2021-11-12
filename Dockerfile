@@ -28,8 +28,8 @@ RUN apt-get update \
 && sbt publishLocal \
 && rm -Rf ./target \
 && cd .. \
-&& git clone https://github.com/toposoid/toposoid-sentence-parser.git \
-&& cd toposoid-sentence-parser \
+&& git clone https://github.com/toposoid/toposoid-sentence-parser-japanese.git \
+&& cd toposoid-sentence-parser-japanese \
 && sbt publishLocal \
 && rm -Rf ./target \
 && cd .. \
@@ -40,6 +40,8 @@ RUN apt-get update \
 && cd .. \
 && git clone https://github.com/toposoid/toposoid-sentence-parser-web.git \
 && cd toposoid-sentence-parser-web \
+#&& git checkout -b ${TARGET_BRANCH} origin/${TARGET_BRANCH}
+&& git checkout ${TARGET_BRANCH} \
 && sbt playUpdateSecret 1> /dev/null \
 && sbt dist \
 && cd /app/toposoid-sentence-parser-web/target/universal \
