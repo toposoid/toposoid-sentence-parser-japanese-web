@@ -1,4 +1,4 @@
-name: Unit Test And Build Image Action
+name: Test And Build
 on:
   push:
     branches:
@@ -8,8 +8,8 @@ on:
 env:
   PJ_ACTOR: toposoid
   PJ_REPO: toposoid-sentence-parser-web
-  PJ_BRANCH: main
-  PJ_VERSION: 0.1.0.sp1
+  PJ_BRANCH: feature
+  PJ_VERSION: 0.1.1
 jobs:
   unit-test_toposoid-sentence-parser-web:
     runs-on: ubuntu-20.04
