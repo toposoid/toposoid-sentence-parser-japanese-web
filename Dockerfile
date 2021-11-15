@@ -1,7 +1,7 @@
 FROM toposoid/scala-knp:2.12.12-4.19
 
 WORKDIR /app
-
+ARG TARGET_BRANCH
 ENV DEPLOYMENT=local
 ENV _JAVA_OPTIONS="-Xms2g -Xmx4g"
 
