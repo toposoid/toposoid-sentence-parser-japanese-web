@@ -17,7 +17,7 @@
 package controllers
 
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
-import com.ideal.linked.toposoid.protocol.model.base.AnalyzedSentenceObjects
+import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects}
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api.Play.materializer
@@ -224,5 +224,46 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
         }
       }
     }
+  }
+
+  "analyzeOneSetence POST(sentence is empty)" should {
+    "returns an appropriate response" in {
+      val controller: HomeController = inject[HomeController]
+      val jsonStr:String = """{
+                             |"sentence": "",
+                             |"json": "{}"
+                             |}
+                             |""".stripMargin
+      val fr = FakeRequest(POST, "/analyzeOneSentence")
+        .withHeaders("Content-type" -> "application/json")
+        .withJsonBody(Json.parse(jsonStr))
+      val result= call(controller.analyzeOneSentence(), fr)
+      status(result) mustBe OK
+      val jsonResult:String = contentAsJson(result).toString()
+      val aso:AnalyzedSentenceObject = Json.parse(jsonResult).as[AnalyzedSentenceObject]
+      assert(aso.nodeMap.size == 0)
+      assert(aso.edgeList.size == 0)
+    }
+  }
+
+  "analyzeOneSetence POST(single sentence)" should {
+    "returns an appropriate response" in {
+      val controller: HomeController = inject[HomeController]
+      val jsonStr:String = """{
+                             |"sentence": "案ずるより産むが易し。",
+                             |"json": "{}"
+                             |}
+                             |""".stripMargin
+      val fr = FakeRequest(POST, "/analyzeOneSentence")
+        .withHeaders("Content-type" -> "application/json")
+        .withJsonBody(Json.parse(jsonStr))
+      val result = call(controller.analyzeOneSentence(), fr)
+      status(result) mustBe OK
+      val jsonResult: String = contentAsJson(result).toString()
+      val aso: AnalyzedSentenceObject = Json.parse(jsonResult).as[AnalyzedSentenceObject]
+      val sentence: String = aso.nodeMap.map(x => x._2.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.surface }
+      assert(sentence.equals("案ずるより産むが易し。"))
+    }
+
   }
 }
