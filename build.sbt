@@ -1,7 +1,7 @@
 name := """toposoid-sentence-parser-web"""
 organization := "com.linked.ideal"
 
-version := "0.1.1"
+version := "0.1-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).enablePlugins(AutomateHeaderPlugin)
 
@@ -15,8 +15,8 @@ scalaVersion := "2.12.12"
 libraryDependencies += guice
 libraryDependencies += "com.ideal.linked" %% "scala-common" % "0.1.0"
 libraryDependencies += "com.ideal.linked" %% "toposoid-common" % "0.1.1"
-libraryDependencies += "com.ideal.linked" %% "toposoid-knowledgebase-model" % "0.1.0"
-libraryDependencies += "com.ideal.linked" %% "toposoid-deduction-protocol-model" % "0.1.0"
-libraryDependencies += "com.ideal.linked" %% "toposoid-sentence-parser-japanese" % "0.1.1"
+libraryDependencies += "com.ideal.linked" %% "toposoid-knowledgebase-model" % "0.1-SNAPSHOT"
+libraryDependencies += "com.ideal.linked" %% "toposoid-deduction-protocol-model" % "0.1-SNAPSHOT"
+libraryDependencies += "com.ideal.linked" %% "toposoid-sentence-parser-japanese" % "0.1-SNAPSHOT"
 libraryDependencies += "io.jvm.uuid" %% "scala-uuid" % "0.3.1"
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test

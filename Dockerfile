@@ -55,7 +55,7 @@ RUN apt-get update \
 && sbt playUpdateSecret 1> /dev/null \
 && sbt dist \
 && cd /app/toposoid-sentence-parser-web/target/universal \
-&& unzip -o toposoid-sentence-parser-web-0.1.1.zip
+&& unzip -o toposoid-sentence-parser-web-0.1-SNAPSHOT.zip
 
 
 COPY ./docker-entrypoint.sh /app/
