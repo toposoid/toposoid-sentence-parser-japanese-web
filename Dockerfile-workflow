@@ -48,7 +48,7 @@ RUN apt-get update \
 && sbt publishLocal \
 && rm -Rf ./target \
 && cd .. \
-&& git clone https://github.com/toposoid/toposoid-sentence-parser-web.git \
-&& cd toposoid-sentence-parser-web \
+&& git clone https://github.com/toposoid/toposoid-sentence-parser-japanese-web.git \
+&& cd toposoid-sentence-parser-japanese-web \
 && git fetch origin ${TARGET_BRANCH} \
 && git checkout ${TARGET_BRANCH}
