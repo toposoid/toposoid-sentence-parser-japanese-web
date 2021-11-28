@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 env:
   PJ_ACTOR: toposoid
-  PJ_REPO: toposoid-sentence-parser-web
+  PJ_REPO: toposoid-sentence-parser-japanese-web
   PJ_BRANCH: feature
   PJ_VERSION: 0.1-SNAPSHOT
 jobs:
-  unit-test_toposoid-sentence-parser-web:
+  unit-test_toposoid-sentence-parser-japanese-web:
     runs-on: ubuntu-20.04
     steps:
       - name: Clone ${{ env.PJ_REPO }}

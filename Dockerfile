@@ -48,14 +48,14 @@ RUN apt-get update \
 && sbt publishLocal \
 && rm -Rf ./target \
 && cd .. \
-&& git clone https://github.com/toposoid/toposoid-sentence-parser-web.git \
-&& cd toposoid-sentence-parser-web \
+&& git clone https://github.com/toposoid/toposoid-sentence-parser-japanese-web.git \
+&& cd toposoid-sentence-parser-japanese-web \
 && git fetch origin ${TARGET_BRANCH} \
 && git checkout ${TARGET_BRANCH} \
 && sbt playUpdateSecret 1> /dev/null \
 && sbt dist \
-&& cd /app/toposoid-sentence-parser-web/target/universal \
-&& unzip -o toposoid-sentence-parser-web-0.1-SNAPSHOT.zip
+&& cd /app/toposoid-sentence-parser-japanese-web/target/universal \
+&& unzip -o toposoid-sentence-parser-japanese-web-0.1-SNAPSHOT.zip
 
 
 COPY ./docker-entrypoint.sh /app/

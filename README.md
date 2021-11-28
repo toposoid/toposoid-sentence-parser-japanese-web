@@ -1,4 +1,4 @@
-# toposoid-sentence-parser-web
+# toposoid-sentence-parser-japanese-web
 This is a WEB API that works as a microservice within the Toposoid project.
 Toposoid is a knowledge base construction platform.(see [Toposoid　Root Project](https://github.com/toposoid/toposoid.git))
 This Microservice analyzes the predicate argument structure of Japanese sentences and outputs the result in JSON.
@@ -36,7 +36,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 * The meaning of premise is a premise as a proposition, and it corresponds to A of A → B in a logical formula. Therefore, it is set when there is a condition for the claim. Unless there are special conditions, it is not necessary to set the premise.
 
 ## License
-toposoid/toposoid-sentence-parser-web is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
+toposoid/toposoid-sentence-parser-japanese-web is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
 
 ## Author
 * Makoto Kubodera([Linked Ideal LLC.](https://linked-ideal.com/))
