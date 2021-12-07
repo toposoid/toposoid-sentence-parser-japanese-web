@@ -231,7 +231,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr:String = """{
                              |"sentence": "",
-                             |"json": "{}"
+                             |"extentInfoJson": "{}"
                              |}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyzeOneSentence")
@@ -251,7 +251,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr:String = """{
                              |"sentence": "案ずるより産むが易し。",
-                             |"json": "{}"
+                             |"extentInfoJson": "{}"
                              |}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyzeOneSentence")
