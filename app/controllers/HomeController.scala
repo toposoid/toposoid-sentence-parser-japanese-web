@@ -46,8 +46,8 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     try {
       val json = request.body
       val component: InputSentence = Json.parse(json.toString).as[InputSentence]
-      logger.info(component.premise.toString())
-      logger.info(component.claim.toString())
+      logger.info(component.premise.map(_.sentence).mkString(","))
+      logger.info(component.claim.map(_.sentence).mkString(","))
       val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(component.premise, PREMISE.index).analyzedSentenceObjects ::: this.setData(component.claim, CLAIM.index).analyzedSentenceObjects)
       Ok(Json.toJson(result)).as(JSON)
     }catch{
@@ -91,11 +91,11 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
    * @param sentenceType
    * @return
    */
-  private def setData(sentences:List[String], sentenceType:Int):AnalyzedSentenceObjects = Try{
+  private def setData(knowledgeList:List[Knowledge], sentenceType:Int):AnalyzedSentenceObjects = Try{
     var asoList = List.empty[AnalyzedSentenceObject]
-    for((mk, i) <- sentences.zipWithIndex){
-      if (mk != "") {
-        val sentenceObject = SentenceParser.parse(mk)
+    for((knoledge, i) <- knowledgeList.zipWithIndex){
+      if (knoledge.sentence != "") {
+        val sentenceObject = SentenceParser.parse(knoledge.sentence)
         val nodeMap:Map[String, KnowledgeBaseNode] = sentenceObject._1
         val edgeList:List[KnowledgeBaseEdge] = sentenceObject._2
         val deductionResultMap:Map[String, DeductionResult] =
