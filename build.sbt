@@ -1,7 +1,7 @@
 name := """toposoid-sentence-parser-japanese-web"""
 organization := "com.linked.ideal"
 
-version := "0.1-SNAPSHOT"
+version := "0.2"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).enablePlugins(AutomateHeaderPlugin)
 
