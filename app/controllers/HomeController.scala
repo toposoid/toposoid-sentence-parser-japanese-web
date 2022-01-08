@@ -19,6 +19,7 @@ package controllers
 
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
 import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode}
+import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
 import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, DeductionResult}
 import com.ideal.linked.toposoid.protocol.model.parser.InputSentence
 import com.ideal.linked.toposoid.sentence.parser.japanese.SentenceParser
@@ -45,10 +46,37 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     try {
       val json = request.body
       val component: InputSentence = Json.parse(json.toString).as[InputSentence]
-      logger.info(component.premise.toString())
-      logger.info(component.claim.toString())
+      logger.info(component.premise.map(_.sentence).mkString(","))
+      logger.info(component.claim.map(_.sentence).mkString(","))
       val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(component.premise, PREMISE.index).analyzedSentenceObjects ::: this.setData(component.claim, CLAIM.index).analyzedSentenceObjects)
       Ok(Json.toJson(result)).as(JSON)
+    }catch{
+      case e: Exception => {
+        logger.error(e.toString, e)
+        BadRequest(Json.obj("status" ->"Error", "message" -> e.toString()))
+      }
+    }
+  }
+
+  def analyzeOneSentence()  = Action(parse.json) { request =>
+    try {
+      val json = request.body
+      val knowledge : Knowledge = Json.parse(json.toString).as[Knowledge]
+      val deductionResultMap:Map[String, DeductionResult] =
+        Map(
+          PREMISE.index.toString -> DeductionResult(false, List.empty[String], ""),
+          CLAIM.index.toString -> DeductionResult(false, List.empty[String],"")
+        )
+      if(knowledge.sentence.strip() == "") {
+        val defaultAso:AnalyzedSentenceObject = AnalyzedSentenceObject(Map.empty[String, KnowledgeBaseNode], List.empty[KnowledgeBaseEdge], -1, deductionResultMap)
+        Ok(Json.toJson(defaultAso)).as(JSON)
+      }else{
+        val sentenceObject = SentenceParser.parse(knowledge.sentence)
+        val nodeMap:Map[String, KnowledgeBaseNode] = sentenceObject._1
+        val edgeList:List[KnowledgeBaseEdge] = sentenceObject._2
+        val aso = AnalyzedSentenceObject(nodeMap, edgeList, -1, deductionResultMap) //TODO:　In this case The 3rd and 4th argument is meaningless
+        Ok(Json.toJson(aso)).as(JSON)
+      }
     }catch{
       case e: Exception => {
         logger.error(e.toString, e)
@@ -63,11 +91,11 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
    * @param sentenceType
    * @return
    */
-  private def setData(sentences:List[String], sentenceType:Int):AnalyzedSentenceObjects = Try{
+  private def setData(knowledgeList:List[Knowledge], sentenceType:Int):AnalyzedSentenceObjects = Try{
     var asoList = List.empty[AnalyzedSentenceObject]
-    for((mk, i) <- sentences.zipWithIndex){
-      if (mk != "") {
-        val sentenceObject = SentenceParser.parse(mk)
+    for((knoledge, i) <- knowledgeList.zipWithIndex){
+      if (knoledge.sentence != "") {
+        val sentenceObject = SentenceParser.parse(knoledge.sentence)
         val nodeMap:Map[String, KnowledgeBaseNode] = sentenceObject._1
         val edgeList:List[KnowledgeBaseEdge] = sentenceObject._2
         val deductionResultMap:Map[String, DeductionResult] =
