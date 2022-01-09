@@ -24,10 +24,9 @@ It takes more than 20 minutes to pull the Docker image for the first time.
 ## Usage
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
-    "premise":[""], 
-    "claim":["案ずるより産むが易し。"]
-}
-' http://localhost:9001/analyze
+    "premise":[], 
+    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}"}]
+}' http://localhost:9001/analyze
 ```
 
 # Note
