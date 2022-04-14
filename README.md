@@ -5,7 +5,7 @@ This Microservice analyzes the predicate argument structure of Japanese sentence
 
 [![Unit Test And Build Image Action](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml/badge.svg?branch=main)](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml)
 
-<img width="1206" alt="2021-09-23 16 22 55" src="https://user-images.githubusercontent.com/82787843/134468879-cffef03c-329c-45b3-b137-8686eb0b6182.png">
+<img width="1087" alt="" src="https://user-images.githubusercontent.com/82787843/163390535-8cfe9393-b218-4573-921b-1b9be6e05a22.png">
 
 ## Requirements
 * Docker version 20.10.x, or later
@@ -25,9 +25,10 @@ It takes more than 20 minutes to pull the Docker image for the first time.
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
     "premise":[], 
-    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}"}]
+    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
 }' http://localhost:9001/analyze
 ```
+Currently, isNegativeSentence is always set to false when registering data.
 
 # Note
 * This microservice uses 9001 as the default port.
