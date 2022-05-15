@@ -9,7 +9,7 @@ networks:
 
 services:
   toposoid-sentence-parser-japanese-web:
-    image: toposoid-sentence-parser-japanese-web:0.3-SNAPSHOT
+    image: toposoid-sentence-parser-japanese-web:0.3
     tty: true
     environment:
       - GRAPHDB_HOST=172.30.0.3
