@@ -57,7 +57,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr: String =
         """{
-          |    "premise":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}],
+          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}],
           |    "claim":[]
           |}
           |""".stripMargin
@@ -83,7 +83,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr: String =
         """{
-          |    "premise":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}, {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}],
+          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}],
           |    "claim":[]
           |}
           |""".stripMargin
@@ -113,7 +113,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr:String = """{
                              |    "premise":[],
-                             |    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
+                             |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}]
                              |}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
@@ -139,7 +139,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val jsonStr: String =
         """{
           |    "premise":[],
-          |    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}, {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
+          |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}]
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
@@ -167,8 +167,8 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr: String =
         """{
-          |    "premise":[{"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}],
-          |    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
+          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}],
+          |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}]
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
@@ -195,8 +195,8 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr: String =
         """{
-          |    "premise":[{"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}, {"sentence": "思い立ったが吉日。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}],
-          |    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}, {"sentence": "蓮の台の半座を分かつ。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
+          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "思い立ったが吉日。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}],
+          |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "蓮の台の半座を分かつ。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}]
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
@@ -230,11 +230,14 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
       val jsonStr:String = """{
+                             |"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414",
+                             |"sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170",
+                             |"knowledge": {
                              |"sentence": "",
                              |"lang": "ja_JP",
                              |"extentInfoJson": "{}",
                              |"isNegativeSentence":false
-                             |}
+                             |}}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyzeOneSentence")
         .withHeaders("Content-type" -> "application/json")
@@ -252,11 +255,14 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
       val jsonStr:String = """{
+                             |"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414",
+                             |"sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170",
+                             |"knowledge": {
                              |"sentence": "案ずるより産むが易し。",
                              |"lang": "ja_JP",
                              |"extentInfoJson": "{}",
                              |"isNegativeSentence":false
-                             |}
+                             |}}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyzeOneSentence")
         .withHeaders("Content-type" -> "application/json")
