@@ -34,15 +34,15 @@ RUN apt-get update \
 && sbt publishLocal \
 && rm -Rf ./target \
 && cd .. \
-&& git clone https://github.com/toposoid/toposoid-sentence-parser-japanese.git \
-&& cd toposoid-sentence-parser-japanese \
+&& git clone https://github.com/toposoid/toposoid-deduction-protocol-model.git \
+&& cd toposoid-deduction-protocol-model \
 && git fetch origin ${TARGET_BRANCH} \
 && git checkout ${TARGET_BRANCH} \
 && sbt publishLocal \
 && rm -Rf ./target \
 && cd .. \
-&& git clone https://github.com/toposoid/toposoid-deduction-protocol-model.git \
-&& cd toposoid-deduction-protocol-model \
+&& git clone https://github.com/toposoid/toposoid-sentence-parser-japanese.git \
+&& cd toposoid-sentence-parser-japanese \
 && git fetch origin ${TARGET_BRANCH} \
 && git checkout ${TARGET_BRANCH} \
 && sbt publishLocal \
