@@ -48,8 +48,12 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       val inputSentenceForParser: InputSentenceForParser = Json.parse(json.toString).as[InputSentenceForParser]
       logger.info(inputSentenceForParser.premise.map(_.knowledge.sentence).mkString(","))
       logger.info(inputSentenceForParser.claim.map(_.knowledge.sentence).mkString(","))
-      val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(inputSentenceForParser.premise, PREMISE.index).analyzedSentenceObjects ::: this.setData(inputSentenceForParser.claim, CLAIM.index).analyzedSentenceObjects)
-      Ok(Json.toJson(result)).as(JSON)
+      if(inputSentenceForParser.premise.size > 0 && inputSentenceForParser.claim.size  == 0){
+        BadRequest(Json.obj("status" ->"Error", "message" -> "It is not possible to register only as a prerequisite. If you have any premises, please also register a claim."))
+      }else{
+        val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(inputSentenceForParser.premise, PREMISE.index).analyzedSentenceObjects ::: this.setData(inputSentenceForParser.claim, CLAIM.index).analyzedSentenceObjects)
+        Ok(Json.toJson(result)).as(JSON)
+      }
     }catch{
       case e: Exception => {
         logger.error(e.toString, e)
@@ -57,7 +61,8 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       }
     }
   }
-
+  /*
+  @deprecated
   def analyzeOneSentence()  = Action(parse.json) { request =>
     try {
       val json = request.body
@@ -84,7 +89,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       }
     }
   }
-
+  */
   /**
    * This function sets the result of predicate argument structure analysis to the AnalyzedSentenceObjects type.
    * @param sentences
