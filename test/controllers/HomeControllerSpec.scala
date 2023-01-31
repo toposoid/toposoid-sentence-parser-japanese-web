@@ -57,7 +57,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr: String =
         """{
-          |    "premise":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}],
+          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}],
           |    "claim":[]
           |}
           |""".stripMargin
@@ -65,16 +65,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
         .withHeaders("Content-type" -> "application/json")
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
-      status(result) mustBe OK
-      val jsonResult: String = contentAsJson(result).toString()
-      val asos: AnalyzedSentenceObjects = Json.parse(jsonResult).as[AnalyzedSentenceObjects]
-      assert(asos.analyzedSentenceObjects.size == 1)
-      for (aso <- asos.analyzedSentenceObjects) {
-        assert(aso.sentenceType == PREMISE.index)
-        val sentence: String = aso.nodeMap.map(x => x._2.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.surface }
-        assert(sentence.equals("案ずるより産むが易し。"))
-      }
-
+      status(result) mustBe BAD_REQUEST
     }
   }
 
@@ -83,7 +74,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr: String =
         """{
-          |    "premise":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}, {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}],
+          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}],
           |    "claim":[]
           |}
           |""".stripMargin
@@ -91,19 +82,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
         .withHeaders("Content-type" -> "application/json")
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
-      status(result) mustBe OK
-      val jsonResult: String = contentAsJson(result).toString()
-      val asos: AnalyzedSentenceObjects = Json.parse(jsonResult).as[AnalyzedSentenceObjects]
-      assert(asos.analyzedSentenceObjects.size == 2)
-      for ((aso, i) <- asos.analyzedSentenceObjects.zipWithIndex) {
-        assert(aso.sentenceType == PREMISE.index)
-        val sentence: String = aso.nodeMap.map(x => x._2.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.surface }
-        if(i == 0){
-          assert(sentence.equals("案ずるより産むが易し。"))
-        }else{
-          assert(sentence.equals("失敗は成功の基"))
-        }
-      }
+      status(result) mustBe BAD_REQUEST
     }
   }
 
@@ -113,7 +92,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr:String = """{
                              |    "premise":[],
-                             |    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
+                             |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}]
                              |}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
@@ -139,7 +118,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val jsonStr: String =
         """{
           |    "premise":[],
-          |    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}, {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
+          |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}]
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
@@ -167,8 +146,8 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr: String =
         """{
-          |    "premise":[{"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}],
-          |    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
+          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}],
+          |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}]
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
@@ -195,8 +174,8 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val jsonStr: String =
         """{
-          |    "premise":[{"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}, {"sentence": "思い立ったが吉日。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}],
-          |    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}, {"sentence": "蓮の台の半座を分かつ。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
+          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "思い立ったが吉日。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}],
+          |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "蓮の台の半座を分かつ。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}}]
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
@@ -224,50 +203,5 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
         }
       }
     }
-  }
-
-  "analyzeOneSetence POST(sentence is empty)" should {
-    "returns an appropriate response" in {
-      val controller: HomeController = inject[HomeController]
-      val jsonStr:String = """{
-                             |"sentence": "",
-                             |"lang": "ja_JP",
-                             |"extentInfoJson": "{}",
-                             |"isNegativeSentence":false
-                             |}
-                             |""".stripMargin
-      val fr = FakeRequest(POST, "/analyzeOneSentence")
-        .withHeaders("Content-type" -> "application/json")
-        .withJsonBody(Json.parse(jsonStr))
-      val result= call(controller.analyzeOneSentence(), fr)
-      status(result) mustBe OK
-      val jsonResult:String = contentAsJson(result).toString()
-      val aso:AnalyzedSentenceObject = Json.parse(jsonResult).as[AnalyzedSentenceObject]
-      assert(aso.nodeMap.size == 0)
-      assert(aso.edgeList.size == 0)
-    }
-  }
-
-  "analyzeOneSetence POST(single sentence)" should {
-    "returns an appropriate response" in {
-      val controller: HomeController = inject[HomeController]
-      val jsonStr:String = """{
-                             |"sentence": "案ずるより産むが易し。",
-                             |"lang": "ja_JP",
-                             |"extentInfoJson": "{}",
-                             |"isNegativeSentence":false
-                             |}
-                             |""".stripMargin
-      val fr = FakeRequest(POST, "/analyzeOneSentence")
-        .withHeaders("Content-type" -> "application/json")
-        .withJsonBody(Json.parse(jsonStr))
-      val result = call(controller.analyzeOneSentence(), fr)
-      status(result) mustBe OK
-      val jsonResult: String = contentAsJson(result).toString()
-      val aso: AnalyzedSentenceObject = Json.parse(jsonResult).as[AnalyzedSentenceObject]
-      val sentence: String = aso.nodeMap.map(x => x._2.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.surface }
-      assert(sentence.equals("案ずるより産むが易し。"))
-    }
-
   }
 }

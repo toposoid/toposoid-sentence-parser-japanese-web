@@ -21,7 +21,7 @@ import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
 import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
 import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, DeductionResult}
-import com.ideal.linked.toposoid.protocol.model.parser.InputSentence
+import com.ideal.linked.toposoid.protocol.model.parser.{InputSentence, InputSentenceForParser, KnowledgeForParser}
 import com.ideal.linked.toposoid.sentence.parser.japanese.SentenceParser
 import com.typesafe.scalalogging.LazyLogging
 
@@ -45,11 +45,15 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   def analyze()  = Action(parse.json) { request =>
     try {
       val json = request.body
-      val component: InputSentence = Json.parse(json.toString).as[InputSentence]
-      logger.info(component.premise.map(_.sentence).mkString(","))
-      logger.info(component.claim.map(_.sentence).mkString(","))
-      val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(component.premise, PREMISE.index).analyzedSentenceObjects ::: this.setData(component.claim, CLAIM.index).analyzedSentenceObjects)
-      Ok(Json.toJson(result)).as(JSON)
+      val inputSentenceForParser: InputSentenceForParser = Json.parse(json.toString).as[InputSentenceForParser]
+      logger.info(inputSentenceForParser.premise.map(_.knowledge.sentence).mkString(","))
+      logger.info(inputSentenceForParser.claim.map(_.knowledge.sentence).mkString(","))
+      if(inputSentenceForParser.premise.size > 0 && inputSentenceForParser.claim.size  == 0){
+        BadRequest(Json.obj("status" ->"Error", "message" -> "It is not possible to register only as a prerequisite. If you have any premises, please also register a claim."))
+      }else{
+        val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(inputSentenceForParser.premise, PREMISE.index).analyzedSentenceObjects ::: this.setData(inputSentenceForParser.claim, CLAIM.index).analyzedSentenceObjects)
+        Ok(Json.toJson(result)).as(JSON)
+      }
     }catch{
       case e: Exception => {
         logger.error(e.toString, e)
@@ -57,24 +61,25 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       }
     }
   }
-
+  /*
+  @deprecated
   def analyzeOneSentence()  = Action(parse.json) { request =>
     try {
       val json = request.body
-      val knowledge : Knowledge = Json.parse(json.toString).as[Knowledge]
+      val knowledgeForParser : KnowledgeForParser = Json.parse(json.toString).as[KnowledgeForParser]
       val deductionResultMap:Map[String, DeductionResult] =
         Map(
           PREMISE.index.toString -> DeductionResult(false, List.empty[String], ""),
           CLAIM.index.toString -> DeductionResult(false, List.empty[String],"")
         )
-      if(knowledge.sentence.strip() == "") {
-        val defaultAso:AnalyzedSentenceObject = AnalyzedSentenceObject(Map.empty[String, KnowledgeBaseNode], List.empty[KnowledgeBaseEdge], -1, deductionResultMap)
+      if(knowledgeForParser.knowledge.sentence.strip() == "") {
+        val defaultAso:AnalyzedSentenceObject = AnalyzedSentenceObject(Map.empty[String, KnowledgeBaseNode], List.empty[KnowledgeBaseEdge], -1, knowledgeForParser.sentenceId, knowledgeForParser.knowledge.sentence, deductionResultMap)
         Ok(Json.toJson(defaultAso)).as(JSON)
       }else{
-        val sentenceObject = SentenceParser.parse(knowledge.sentence)
+        val sentenceObject = SentenceParser.parse(knowledgeForParser)
         val nodeMap:Map[String, KnowledgeBaseNode] = sentenceObject._1
         val edgeList:List[KnowledgeBaseEdge] = sentenceObject._2
-        val aso = AnalyzedSentenceObject(nodeMap, edgeList, -1, deductionResultMap) //TODO:　In this case The 3rd and 4th argument is meaningless
+        val aso = AnalyzedSentenceObject(nodeMap, edgeList, -1, knowledgeForParser.sentenceId, knowledgeForParser.knowledge.sentence, deductionResultMap) //TODO:　In this case The 3rd and 4th argument is meaningless
         Ok(Json.toJson(aso)).as(JSON)
       }
     }catch{
@@ -84,18 +89,18 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       }
     }
   }
-
+  */
   /**
    * This function sets the result of predicate argument structure analysis to the AnalyzedSentenceObjects type.
    * @param sentences
    * @param sentenceType
    * @return
    */
-  private def setData(knowledgeList:List[Knowledge], sentenceType:Int):AnalyzedSentenceObjects = Try{
+  private def setData(knowledgeForParserList:List[KnowledgeForParser], sentenceType:Int):AnalyzedSentenceObjects = Try{
     var asoList = List.empty[AnalyzedSentenceObject]
-    for((knoledge, i) <- knowledgeList.zipWithIndex){
-      if (knoledge.sentence != "") {
-        val sentenceObject = SentenceParser.parse(knoledge.sentence)
+    for((knowledgeForParser, i) <- knowledgeForParserList.zipWithIndex){
+      if (knowledgeForParser.knowledge.sentence != "") {
+        val sentenceObject = SentenceParser.parse(knowledgeForParser)
         val nodeMap:Map[String, KnowledgeBaseNode] = sentenceObject._1
         val edgeList:List[KnowledgeBaseEdge] = sentenceObject._2
         val deductionResultMap:Map[String, DeductionResult] =
@@ -103,7 +108,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
             PREMISE.index.toString -> DeductionResult(false, List.empty[String], ""),
             CLAIM.index.toString -> DeductionResult(false, List.empty[String],"")
           )
-        val aso = AnalyzedSentenceObject(nodeMap, edgeList, sentenceType, deductionResultMap)
+        val aso = AnalyzedSentenceObject(nodeMap, edgeList, sentenceType, knowledgeForParser.sentenceId, knowledgeForParser.knowledge.lang, deductionResultMap)
         asoList :+= aso
       }
     }

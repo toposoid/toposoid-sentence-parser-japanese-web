@@ -5,8 +5,7 @@ This Microservice analyzes the predicate argument structure of Japanese sentence
 
 [![Unit Test And Build Image Action](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml/badge.svg?branch=main)](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml)
 
-<img width="1095" alt="" src="https://user-images.githubusercontent.com/82787843/169630202-d66f15c9-bff0-4184-9ed0-077ec76b9499.png">
-
+<img width="1082" src="https://user-images.githubusercontent.com/82787843/212462574-e7d303b0-f573-432e-bba0-d45230b53c0d.png">
 
 ## Requirements
 * Docker version 20.10.x, or later
@@ -25,8 +24,19 @@ It takes more than 20 minutes to pull the Docker image for the first time.
 ## Usage
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{
-    "premise":[], 
-    "claim":[{"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false}]
+    "premise": [],
+    "claim": [
+        {
+            "propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414",
+            "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170",
+            "knowledge": {
+                "sentence": "案ずるより産むが易し。",
+                "lang": "ja_JP",
+                "extentInfoJson": "{}",
+                "isNegativeSentence": false
+            }
+        }
+    ]
 }' http://localhost:9001/analyze
 ```
 Currently, isNegativeSentence is always set to false when registering data.
