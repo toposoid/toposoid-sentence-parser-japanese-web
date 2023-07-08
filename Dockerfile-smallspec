@@ -30,7 +30,7 @@ RUN apt-get update \
 && cd .. \
 && git clone https://github.com/toposoid/scala-juman-knp.git \
 && cd scala-juman-knp \
-&& git checkout scala-2.12-support \
+&& git checkout scala-2.13-support \
 && sbt publishLocal \
 && rm -Rf ./target \
 && cd .. \
