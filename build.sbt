@@ -10,8 +10,7 @@ startYear := Some(2021)
 licenses += ("Apache-2.0", new URL("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 
 
-scalaVersion := "2.13.11" +
-  ""
+scalaVersion := "2.13.11"
 
 libraryDependencies += guice
 libraryDependencies += "com.ideal.linked" %% "scala-common" % "0.5-SNAPSHOT"
