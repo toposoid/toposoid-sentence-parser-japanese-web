@@ -105,7 +105,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       assert(asos.analyzedSentenceObjects.size == 1)
       for(aso <- asos.analyzedSentenceObjects ){
         assert(aso.sentenceType == CLAIM.index)
-        val sentence:String = aso.nodeMap.map(x => x._2.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.surface }
+        val sentence:String = aso.nodeMap.map(x => x._2.predicateArgumentStructure.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.predicateArgumentStructure.surface }
         assert(sentence.equals("案ずるより産むが易し。"))
       }
 
@@ -131,7 +131,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       assert(asos.analyzedSentenceObjects.size == 2)
       for ((aso, i) <- asos.analyzedSentenceObjects.zipWithIndex) {
         assert(aso.sentenceType == CLAIM.index)
-        val sentence: String = aso.nodeMap.map(x => x._2.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.surface }
+        val sentence: String = aso.nodeMap.map(x => x._2.predicateArgumentStructure.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.predicateArgumentStructure.surface }
         if (i == 0) {
           assert(sentence.equals("案ずるより産むが易し。"))
         } else {
@@ -159,7 +159,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val asos: AnalyzedSentenceObjects = Json.parse(jsonResult).as[AnalyzedSentenceObjects]
       assert(asos.analyzedSentenceObjects.size == 2)
       for ((aso, i) <- asos.analyzedSentenceObjects.zipWithIndex) {
-        val sentence: String = aso.nodeMap.map(x => x._2.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.surface }
+        val sentence: String = aso.nodeMap.map(x => x._2.predicateArgumentStructure.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.predicateArgumentStructure.surface }
         if (aso.sentenceType == PREMISE.index) {
           assert(sentence.equals("失敗は成功の基。"))
         } else if (aso.sentenceType == CLAIM.index) {
@@ -187,7 +187,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val asos: AnalyzedSentenceObjects = Json.parse(jsonResult).as[AnalyzedSentenceObjects]
       assert(asos.analyzedSentenceObjects.size == 4)
       for ((aso, i) <- asos.analyzedSentenceObjects.zipWithIndex) {
-        val sentence: String = aso.nodeMap.map(x => x._2.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.surface }
+        val sentence: String = aso.nodeMap.map(x => x._2.predicateArgumentStructure.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.predicateArgumentStructure.surface }
         if (aso.sentenceType == PREMISE.index) {
           if(i == 0){
             assert(sentence.equals("失敗は成功の基。"))
