@@ -18,7 +18,7 @@ package controllers
 
 
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
-import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeFeatureNode, LocalContextForFeature}
+import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeFeatureNode, KnowledgeFeatureReference, LocalContextForFeature}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
 import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, DeductionResult}
 import com.ideal.linked.toposoid.protocol.model.parser.{InputSentence, InputSentenceForParser, KnowledgeForParser}
@@ -77,7 +77,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
         val edgeList:List[KnowledgeBaseEdge] = sentenceObject._2
         val localContextForFeature:LocalContextForFeature = LocalContextForFeature(
           knowledgeForParser.knowledge.lang,
-          Map.empty[String, String]
+          List.empty[KnowledgeFeatureReference]
         )
         val knowledgeFeatureNode:KnowledgeFeatureNode = KnowledgeFeatureNode(
           knowledgeForParser.sentenceId,
@@ -85,8 +85,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
           knowledgeForParser.sentenceId,
           knowledgeForParser.knowledge.sentence,
           sentenceType,
-          localContextForFeature,
-          "{}"
+          localContextForFeature
         )
         val deductionResultMap:Map[String, DeductionResult] =
           Map(
