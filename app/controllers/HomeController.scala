@@ -20,7 +20,7 @@ package controllers
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
 import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeFeatureNode, KnowledgeFeatureReference, LocalContextForFeature}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
-import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, DeductionResult}
+import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, DeductionResult, MatchedPropositionInfo}
 import com.ideal.linked.toposoid.protocol.model.parser.{InputSentence, InputSentenceForParser, KnowledgeForParser}
 import com.ideal.linked.toposoid.sentence.parser.japanese.SentenceParser
 import com.typesafe.scalalogging.LazyLogging
@@ -89,8 +89,8 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
         )
         val deductionResultMap:Map[String, DeductionResult] =
           Map(
-            PREMISE.index.toString -> DeductionResult(false, List.empty[String], ""),
-            CLAIM.index.toString -> DeductionResult(false, List.empty[String],"")
+            PREMISE.index.toString -> DeductionResult(false, List.empty[MatchedPropositionInfo], ""),
+            CLAIM.index.toString -> DeductionResult(false, List.empty[MatchedPropositionInfo],"")
           )
         val aso = AnalyzedSentenceObject(nodeMap, edgeList, knowledgeFeatureNode, deductionResultMap)
         asoList :+= aso
