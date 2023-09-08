@@ -18,7 +18,8 @@ package controllers
 
 
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
-import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeFeatureNode, KnowledgeFeatureReference, LocalContextForFeature}
+import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeFeatureNode, KnowledgeFeatureReference, LocalContextForFeature, PredicateArgumentStructure}
+import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceList}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
 import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, DeductionResult, MatchedPropositionInfo}
 import com.ideal.linked.toposoid.protocol.model.parser.{InputSentence, InputSentenceForParser, KnowledgeForParser}
@@ -62,6 +63,30 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     }
   }
 
+  /**
+   * input Text from frontend
+   * @return the surface part of the predicate structure analysis result
+   */
+  def split() = Action(parse.json) { request =>
+    try {
+      val json = request.body
+      val singleSentence:SingleSentence = Json.parse(json.toString).as[SingleSentence]
+      val knowledge:Knowledge = Knowledge(sentence = singleSentence.sentence, lang = "ja_JP", extentInfoJson = "{}", isNegativeSentence = false)
+      val knowledgeForParser:List[KnowledgeForParser] = List(knowledge).map(x => KnowledgeForParser(propositionId = "", sentenceId = "", knowledge = x))
+      val asos = this.setData(knowledgeForParser, CLAIM.index).analyzedSentenceObjects
+
+      val predicateArgumentStructures:List[PredicateArgumentStructure] = asos.map(_.nodeMap.map(_._2.predicateArgumentStructure)).flatten
+      val surfaces = predicateArgumentStructures.filter(x => {
+        x.morphemes.filter(y => y.contains("名詞")).size > 0
+      }).map(_.surface)
+      Ok(Json.toJson(SurfaceList(surfaces.reverse))).as(JSON)
+    } catch {
+      case e: Exception => {
+        logger.error(e.toString, e)
+        BadRequest(Json.obj("status" -> "Error", "message" -> e.toString()))
+      }
+    }
+  }
   /**
    * This function sets the result of predicate argument structure analysis to the AnalyzedSentenceObjects type.
    * @param sentences
