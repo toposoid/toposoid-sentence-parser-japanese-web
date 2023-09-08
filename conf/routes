@@ -5,3 +5,4 @@
 
 # An example controller showing a sample home page
 POST    /analyze             controllers.HomeController.analyze()
+POST    /split               controllers.HomeController.split()

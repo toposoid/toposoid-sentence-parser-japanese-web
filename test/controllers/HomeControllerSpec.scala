@@ -17,6 +17,7 @@
 package controllers
 
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
+import com.ideal.linked.toposoid.knowledgebase.nlp.model.SurfaceList
 import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects}
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
@@ -204,4 +205,24 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       }
     }
   }
+
+  "HomeController POST(split)" should {
+    "returns an appropriate response" in {
+      val controller: HomeController = inject[HomeController]
+      val jsonStr: String =
+        """{
+          |    "sentence": "富士山は、2013年に世界遺産に登録された。"
+          |}
+          |""".stripMargin
+      val fr = FakeRequest(POST, "/split")
+        .withHeaders("Content-type" -> "application/json")
+        .withJsonBody(Json.parse(jsonStr))
+      val result = call(controller.split(), fr)
+      status(result) mustBe OK
+      val jsonResult: String = contentAsJson(result).toString()
+      assert(jsonResult.equals("{\"surfaces\":[\"富士山は、\",\"２０１３年に\",\"世界遺産に\",\"登録された。\"]}"))
+
+    }
+  }
+
 }
