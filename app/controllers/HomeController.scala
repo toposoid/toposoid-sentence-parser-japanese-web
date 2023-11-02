@@ -19,7 +19,7 @@ package controllers
 
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
 import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeFeatureNode, KnowledgeFeatureReference, LocalContextForFeature, PredicateArgumentStructure}
-import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceList}
+import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceInfo, SurfaceInfoList}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
 import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, DeductionResult, MatchedPropositionInfo}
 import com.ideal.linked.toposoid.protocol.model.parser.{InputSentence, InputSentenceForParser, KnowledgeForParser}
@@ -29,6 +29,7 @@ import com.typesafe.scalalogging.LazyLogging
 import javax.inject._
 import play.api._
 import play.api.libs.json.Json
+import play.api.mvc.Results.Ok
 import play.api.mvc._
 
 import scala.util.{Failure, Success, Try}
@@ -76,10 +77,10 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       val asos = this.setData(knowledgeForParser, CLAIM.index).analyzedSentenceObjects
 
       val predicateArgumentStructures:List[PredicateArgumentStructure] = asos.map(_.nodeMap.map(_._2.predicateArgumentStructure)).flatten
-      val surfaces = predicateArgumentStructures.filter(x => {
+      val surfaceInfoList:List[SurfaceInfo] = predicateArgumentStructures.filter(x => {
         x.morphemes.filter(y => y.contains("名詞")).size > 0
-      }).map(_.surface)
-      Ok(Json.toJson(SurfaceList(surfaces.reverse))).as(JSON)
+      }).map(y => SurfaceInfo(y.surface, y.currentId))
+      Ok(Json.toJson(surfaceInfoList.reverse)).as(JSON)
     } catch {
       case e: Exception => {
         logger.error(e.toString, e)
