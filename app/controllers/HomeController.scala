@@ -18,7 +18,7 @@ package controllers
 
 
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
-import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeFeatureNode, KnowledgeFeatureReference, LocalContextForFeature, PredicateArgumentStructure}
+import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeBaseSemiGlobalNode, KnowledgeFeatureReference, LocalContextForFeature, PredicateArgumentStructure}
 import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceInfo}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
 import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, DeductionResult, MatchedPropositionInfo}
@@ -105,7 +105,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
           knowledgeForParser.knowledge.lang,
           List.empty[KnowledgeFeatureReference]
         )
-        val knowledgeFeatureNode:KnowledgeFeatureNode = KnowledgeFeatureNode(
+        val knowledgeBaseSemiGlobalNode:KnowledgeBaseSemiGlobalNode = KnowledgeBaseSemiGlobalNode(
           knowledgeForParser.sentenceId,
           knowledgeForParser.propositionId,
           knowledgeForParser.sentenceId,
@@ -118,7 +118,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
             PREMISE.index.toString -> DeductionResult(false, List.empty[MatchedPropositionInfo], ""),
             CLAIM.index.toString -> DeductionResult(false, List.empty[MatchedPropositionInfo],"")
           )
-        val aso = AnalyzedSentenceObject(nodeMap, edgeList, knowledgeFeatureNode, deductionResultMap)
+        val aso = AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResultMap)
         asoList :+= aso
       }
     }

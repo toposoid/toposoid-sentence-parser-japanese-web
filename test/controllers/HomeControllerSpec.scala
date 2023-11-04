@@ -17,7 +17,7 @@
 package controllers
 
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
-import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects}
+import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObjects}
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api.Play.materializer
@@ -104,7 +104,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val asos:AnalyzedSentenceObjects = Json.parse(jsonResult).as[AnalyzedSentenceObjects]
       assert(asos.analyzedSentenceObjects.size == 1)
       for(aso <- asos.analyzedSentenceObjects ){
-        assert(aso.knowledgeFeatureNode.sentenceType == CLAIM.index)
+        assert(aso.knowledgeBaseSemiGlobalNode.sentenceType == CLAIM.index)
         val sentence:String = aso.nodeMap.map(x => x._2.predicateArgumentStructure.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.predicateArgumentStructure.surface }
         assert(sentence.equals("案ずるより産むが易し。"))
       }
@@ -130,7 +130,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val asos: AnalyzedSentenceObjects = Json.parse(jsonResult).as[AnalyzedSentenceObjects]
       assert(asos.analyzedSentenceObjects.size == 2)
       for ((aso, i) <- asos.analyzedSentenceObjects.zipWithIndex) {
-        assert(aso.knowledgeFeatureNode.sentenceType == CLAIM.index)
+        assert(aso.knowledgeBaseSemiGlobalNode.sentenceType == CLAIM.index)
         val sentence: String = aso.nodeMap.map(x => x._2.predicateArgumentStructure.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.predicateArgumentStructure.surface }
         if (i == 0) {
           assert(sentence.equals("案ずるより産むが易し。"))
@@ -160,9 +160,9 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       assert(asos.analyzedSentenceObjects.size == 2)
       for ((aso, i) <- asos.analyzedSentenceObjects.zipWithIndex) {
         val sentence: String = aso.nodeMap.map(x => x._2.predicateArgumentStructure.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.predicateArgumentStructure.surface }
-        if (aso.knowledgeFeatureNode.sentenceType == PREMISE.index) {
+        if (aso.knowledgeBaseSemiGlobalNode.sentenceType == PREMISE.index) {
           assert(sentence.equals("失敗は成功の基。"))
-        } else if (aso.knowledgeFeatureNode.sentenceType == CLAIM.index) {
+        } else if (aso.knowledgeBaseSemiGlobalNode.sentenceType == CLAIM.index) {
           assert(sentence.equals("案ずるより産むが易し。"))
         }
       }
@@ -188,13 +188,13 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       assert(asos.analyzedSentenceObjects.size == 4)
       for ((aso, i) <- asos.analyzedSentenceObjects.zipWithIndex) {
         val sentence: String = aso.nodeMap.map(x => x._2.predicateArgumentStructure.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.predicateArgumentStructure.surface }
-        if (aso.knowledgeFeatureNode.sentenceType == PREMISE.index) {
+        if (aso.knowledgeBaseSemiGlobalNode.sentenceType == PREMISE.index) {
           if(i == 0){
             assert(sentence.equals("失敗は成功の基。"))
           }else if(i == 1){
             assert(sentence.equals("思い立ったが吉日。"))
           }
-        } else if (aso.knowledgeFeatureNode.sentenceType == CLAIM.index) {
+        } else if (aso.knowledgeBaseSemiGlobalNode.sentenceType == CLAIM.index) {
           if(i == 2){
             assert(sentence.equals("案ずるより産むが易し。"))
           }else if(i == 3){
