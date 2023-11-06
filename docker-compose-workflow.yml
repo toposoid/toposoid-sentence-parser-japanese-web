@@ -12,7 +12,6 @@ services:
     image: toposoid-sentence-parser-japanese-web:0.5-SNAPSHOT
     tty: true
     environment:
-      - GRAPHDB_HOST=172.30.0.3
       - PRIVATE_IP_ADDRESS=172.30.0.2
       - PLAY_HTTP_PORT=9001
     networks:
