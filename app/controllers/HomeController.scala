@@ -121,7 +121,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
           List.empty[CoveredPropositionEdge]
         )
 
-        val deductionResult:DeductionResult = DeductionResult(false, List.empty[MatchedPropositionInfo], "", coveredPropositionResult)
+        val deductionResult:DeductionResult = DeductionResult(false, List.empty[MatchedPropositionInfo], List(coveredPropositionResult))
         val aso = AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResult)
         asoList :+= aso
       }
