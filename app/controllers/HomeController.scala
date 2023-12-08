@@ -21,8 +21,8 @@ import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
 import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeBaseSemiGlobalNode, KnowledgeFeatureReference, LocalContextForFeature, PredicateArgumentStructure}
 import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceInfo}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
-import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, CoveredPropositionEdge, CoveredPropositionResult, DeductionResult, MatchedPropositionInfo}
-import com.ideal.linked.toposoid.protocol.model.parser.{InputSentence, InputSentenceForParser, KnowledgeForParser}
+import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects,CoveredPropositionResult, DeductionResult, MatchedPropositionInfo}
+import com.ideal.linked.toposoid.protocol.model.parser.{InputSentenceForParser, KnowledgeForParser}
 import com.ideal.linked.toposoid.sentence.parser.japanese.SentenceParser
 import com.typesafe.scalalogging.LazyLogging
 
@@ -114,14 +114,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
           localContextForFeature
         )
 
-        val coveredPropositionResult:CoveredPropositionResult = CoveredPropositionResult(
-          "",
-          knowledgeForParser.propositionId,
-          knowledgeForParser.sentenceId,
-          List.empty[CoveredPropositionEdge]
-        )
-
-        val deductionResult:DeductionResult = DeductionResult(false, List.empty[MatchedPropositionInfo], List(coveredPropositionResult))
+        val deductionResult:DeductionResult = DeductionResult(false, List.empty[MatchedPropositionInfo], List.empty[CoveredPropositionResult])
         val aso = AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResult)
         asoList :+= aso
       }
