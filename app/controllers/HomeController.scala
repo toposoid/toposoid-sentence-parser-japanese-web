@@ -114,7 +114,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
           localContextForFeature
         )
 
-        val deductionResult:DeductionResult = DeductionResult(false, List.empty[MatchedPropositionInfo], List.empty[CoveredPropositionResult])
+        val deductionResult:DeductionResult = DeductionResult(false, List.empty[CoveredPropositionResult])
         val aso = AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResult)
         asoList :+= aso
       }
