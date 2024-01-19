@@ -47,7 +47,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile-smallspec
+          file: Dockerfile-lowspec
           push: true
           tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-workflow
           build-args: |
