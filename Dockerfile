@@ -2,8 +2,9 @@ FROM toposoid/scala-knp:2.13.11-4.19
 
 WORKDIR /app
 ARG TARGET_BRANCH
+ARG JAVA_OPT_XMX
 ENV DEPLOYMENT=local
-ENV _JAVA_OPTIONS="-Xms512m -Xmx4g"
+ENV _JAVA_OPTIONS="-Xms512m -Xmx"${JAVA_OPT_XMX}
 
 RUN apt-get update \
 && apt-get -y install git unzip \
