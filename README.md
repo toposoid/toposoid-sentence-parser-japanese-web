@@ -5,21 +5,22 @@ This Microservice analyzes the predicate argument structure of Japanese sentence
 
 [![Unit Test And Build Image Action](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml/badge.svg?branch=main)](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml)
 
-<img width="1082" src="https://user-images.githubusercontent.com/82787843/212462574-e7d303b0-f573-432e-bba0-d45230b53c0d.png">
+<img width="1160"  src="https://github.com/toposoid/toposoid-sentence-parser-japanese-web/assets/82787843/dc81f017-d833-4190-8a99-ab18fba6bac2">
+
 
 ## Requirements
 * Docker version 20.10.x, or later
 * docker-compose version 1.22.x
 
-### Memory requirements
-* Required: at least 6GB of RAM
+### Memory requirements For Standalone
+* Required: at least 3GB of RAM
 * Required: 10G or higher　of HDD
 
-## Setup
+## Setup For Standalone
 ```bssh
 docker-compose up -d
 ```
-It takes more than 20 minutes to pull the Docker image for the first time.
+The first startup takes a long time until docker pull finishes.
 
 ## Usage
 ```bash
