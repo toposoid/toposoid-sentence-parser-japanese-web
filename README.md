@@ -14,7 +14,7 @@ This Microservice analyzes the predicate argument structure of Japanese sentence
 
 ### Memory requirements For Standalone
 * Required: at least 3GB of RAM
-* Required: 10G or higher　of HDD
+* Required: at least 5.29GB of HDD(Docker Image Size)
 
 ## Setup For Standalone
 ```bssh
