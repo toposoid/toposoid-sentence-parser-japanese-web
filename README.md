@@ -34,7 +34,8 @@ curl -X POST -H "Content-Type: application/json" -d '{
                 "sentence": "案ずるより産むが易し。",
                 "lang": "ja_JP",
                 "extentInfoJson": "{}",
-                "isNegativeSentence": false
+                "isNegativeSentence": false,
+                "knowledgeForImages": []
             }
         }
     ]
