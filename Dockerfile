@@ -1,9 +1,10 @@
-FROM toposoid/scala-knp:2.12.12-4.19
+FROM toposoid/scala-knp:2.13.11-4.19
 
 WORKDIR /app
 ARG TARGET_BRANCH
+ARG JAVA_OPT_XMX
 ENV DEPLOYMENT=local
-ENV _JAVA_OPTIONS="-Xms512m -Xmx4g"
+ENV _JAVA_OPTIONS="-Xms512m -Xmx"${JAVA_OPT_XMX}
 
 RUN apt-get update \
 && apt-get -y install git unzip \
@@ -30,7 +31,7 @@ RUN apt-get update \
 && cd .. \
 && git clone https://github.com/toposoid/scala-juman-knp.git \
 && cd scala-juman-knp \
-&& git checkout scala-2.12-support \
+&& git checkout scala-2.13-support \
 && sbt publishLocal \
 && rm -Rf ./target \
 && cd .. \
@@ -55,7 +56,7 @@ RUN apt-get update \
 && sbt playUpdateSecret 1> /dev/null \
 && sbt dist \
 && cd /app/toposoid-sentence-parser-japanese-web/target/universal \
-&& unzip -o toposoid-sentence-parser-japanese-web-0.4.zip
+&& unzip -o toposoid-sentence-parser-japanese-web-0.5.zip
 
 
 COPY ./docker-entrypoint.sh /app/
