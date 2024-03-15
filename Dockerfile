@@ -56,7 +56,7 @@ RUN apt-get update \
 && sbt playUpdateSecret 1> /dev/null \
 && sbt dist \
 && cd /app/toposoid-sentence-parser-japanese-web/target/universal \
-&& unzip -o toposoid-sentence-parser-japanese-web-0.5.zip
+&& unzip -o toposoid-sentence-parser-japanese-web-0.6-SNAPSHOT.zip
 
 
 COPY ./docker-entrypoint.sh /app/
