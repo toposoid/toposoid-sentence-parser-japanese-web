@@ -70,10 +70,11 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
    * @return the surface part of the predicate structure analysis result
    */
   def split() = Action(parse.json) { request =>
+    val username = request.headers.get(USERNAME.str).get
     try {
       val json = request.body
       val singleSentence:SingleSentence = Json.parse(json.toString).as[SingleSentence]
-
+      logger.info(ToposoidUtils.formatMessageForLogger("SENTENCE:" + singleSentence.sentence, username))
       val knowledge:Knowledge = Knowledge(sentence = singleSentence.sentence, lang = "ja_JP", extentInfoJson = "{}", isNegativeSentence = false)
       val knowledgeForParser:List[KnowledgeForParser] = List(knowledge).map(x => KnowledgeForParser(propositionId = "", sentenceId = "", knowledge = x))
       val asos = this.setData(knowledgeForParser, CLAIM.index).analyzedSentenceObjects
@@ -82,10 +83,11 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       val surfaceInfoList:List[SurfaceInfo] = predicateArgumentStructures.filter(x => {
         x.morphemes.filter(y => y.contains("名詞")).size > 0
       }).map(y => SurfaceInfo(y.surface, y.currentId))
+      logger.info(ToposoidUtils.formatMessageForLogger("RESULT:" + surfaceInfoList.mkString(","), username))
       Ok(Json.toJson(surfaceInfoList.reverse)).as(JSON)
     } catch {
       case e: Exception => {
-        logger.error(e.toString)
+        logger.error(ToposoidUtils.formatMessageForLogger(e.toString, username), e)
         BadRequest(Json.obj("status" -> "Error", "message" -> e.toString()))
       }
     }
