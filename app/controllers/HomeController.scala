@@ -17,11 +17,11 @@
 package controllers
 
 
-import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
+import com.ideal.linked.toposoid.common.{CLAIM, PREMISE, ToposoidUtils, USERNAME}
 import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeBaseSemiGlobalNode, KnowledgeFeatureReference, LocalContextForFeature, PredicateArgumentStructure}
 import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceInfo}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
-import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects,CoveredPropositionResult, DeductionResult}
+import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, CoveredPropositionResult, DeductionResult}
 import com.ideal.linked.toposoid.protocol.model.parser.{InputSentenceForParser, KnowledgeForParser}
 import com.ideal.linked.toposoid.sentence.parser.japanese.SentenceParser
 import com.typesafe.scalalogging.LazyLogging
@@ -45,11 +45,12 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
    * @return
    */
   def analyze()  = Action(parse.json) { request =>
+    val username = request.headers.get(USERNAME.str).get
     try {
       val json = request.body
       val inputSentenceForParser: InputSentenceForParser = Json.parse(json.toString).as[InputSentenceForParser]
-      logger.info(inputSentenceForParser.premise.map(_.knowledge.sentence).mkString(","))
-      logger.info(inputSentenceForParser.claim.map(_.knowledge.sentence).mkString(","))
+      logger.info(ToposoidUtils.formatMessageForLogger("PREMISE:" + inputSentenceForParser.premise.map(_.knowledge.sentence).mkString(","), username))
+      logger.info(ToposoidUtils.formatMessageForLogger("CLAIM:" + inputSentenceForParser.claim.map(_.knowledge.sentence).mkString(","), username))
       if(inputSentenceForParser.premise.size > 0 && inputSentenceForParser.claim.size  == 0){
         BadRequest(Json.obj("status" ->"Error", "message" -> "It is not possible to register only as a prerequisite. If you have any premises, please also register a claim."))
       }else{
@@ -58,7 +59,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       }
     }catch{
       case e: Exception => {
-        logger.error(e.toString, e)
+        logger.error(ToposoidUtils.formatMessageForLogger(e.toString, username), e)
         BadRequest(Json.obj("status" ->"Error", "message" -> e.toString()))
       }
     }
@@ -72,6 +73,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     try {
       val json = request.body
       val singleSentence:SingleSentence = Json.parse(json.toString).as[SingleSentence]
+
       val knowledge:Knowledge = Knowledge(sentence = singleSentence.sentence, lang = "ja_JP", extentInfoJson = "{}", isNegativeSentence = false)
       val knowledgeForParser:List[KnowledgeForParser] = List(knowledge).map(x => KnowledgeForParser(propositionId = "", sentenceId = "", knowledge = x))
       val asos = this.setData(knowledgeForParser, CLAIM.index).analyzedSentenceObjects
@@ -83,7 +85,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       Ok(Json.toJson(surfaceInfoList.reverse)).as(JSON)
     } catch {
       case e: Exception => {
-        logger.error(e.toString, e)
+        logger.error(e.toString)
         BadRequest(Json.obj("status" -> "Error", "message" -> e.toString()))
       }
     }

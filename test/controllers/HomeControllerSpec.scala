@@ -16,8 +16,8 @@
 
 package controllers
 
-import com.ideal.linked.toposoid.common.{CLAIM, PREMISE}
-import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObjects}
+import com.ideal.linked.toposoid.common.{CLAIM, PREMISE, USERNAME}
+import com.ideal.linked.toposoid.protocol.model.base.AnalyzedSentenceObjects
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api.Play.materializer
@@ -42,7 +42,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
                              |}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json")
+        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
         .withJsonBody(Json.parse(jsonStr))
       val result= call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -62,7 +62,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json")
+        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe BAD_REQUEST
@@ -79,7 +79,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json")
+        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe BAD_REQUEST
@@ -96,7 +96,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
                              |}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json")
+        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
         .withJsonBody(Json.parse(jsonStr))
       val result= call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -122,7 +122,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json")
+        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -151,7 +151,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json")
+        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -179,7 +179,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json")
+        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -214,7 +214,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/split")
-        .withHeaders("Content-type" -> "application/json")
+        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.split(), fr)
       status(result) mustBe OK
