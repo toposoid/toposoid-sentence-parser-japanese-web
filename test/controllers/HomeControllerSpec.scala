@@ -16,7 +16,7 @@
 
 package controllers
 
-import com.ideal.linked.toposoid.common.{CLAIM, PREMISE, USERNAME}
+import com.ideal.linked.toposoid.common.{CLAIM, PREMISE, TransversalState, TRANSVERSAL_STATE}
 import com.ideal.linked.toposoid.protocol.model.base.AnalyzedSentenceObjects
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
@@ -33,6 +33,8 @@ import play.api.test.Helpers._
  */
 class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting {
 
+  val transversalState:String = Json.toJson(TransversalState(username="guest")).toString()
+  
   "HomeController POST(sentence is empty)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
@@ -42,7 +44,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
                              |}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
+        .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.parse(jsonStr))
       val result= call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -62,7 +64,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
+        .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe BAD_REQUEST
@@ -79,7 +81,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
+        .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe BAD_REQUEST
@@ -96,7 +98,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
                              |}
                              |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
+        .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.parse(jsonStr))
       val result= call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -122,7 +124,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
+        .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -151,7 +153,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
+        .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -179,7 +181,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/analyze")
-        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
+        .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.analyze(), fr)
       status(result) mustBe OK
@@ -214,7 +216,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
           |}
           |""".stripMargin
       val fr = FakeRequest(POST, "/split")
-        .withHeaders("Content-type" -> "application/json", USERNAME.str -> "guest")
+        .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.parse(jsonStr))
       val result = call(controller.split(), fr)
       status(result) mustBe OK
