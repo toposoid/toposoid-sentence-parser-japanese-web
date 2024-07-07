@@ -55,7 +55,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
         BadRequest(Json.obj("status" ->"Error", "message" -> "It is not possible to register only as a prerequisite. If you have any premises, please also register a claim."))
       }else{
         val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(inputSentenceForParser.premise, PREMISE.index).analyzedSentenceObjects ::: this.setData(inputSentenceForParser.claim, CLAIM.index).analyzedSentenceObjects)
-        logger.info("Parsing completed.", transversalState.username)
+        logger.info(ToposoidUtils.formatMessageForLogger("Parsing completed.", transversalState.username))
         Ok(Json.toJson(result)).as(JSON)
       }
     }catch{
