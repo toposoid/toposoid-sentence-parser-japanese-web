@@ -55,12 +55,12 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
         BadRequest(Json.obj("status" ->"Error", "message" -> "It is not possible to register only as a prerequisite. If you have any premises, please also register a claim."))
       }else{
         val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(inputSentenceForParser.premise, PREMISE.index).analyzedSentenceObjects ::: this.setData(inputSentenceForParser.claim, CLAIM.index).analyzedSentenceObjects)
-        logger.info(ToposoidUtils.formatMessageForLogger("Parsing completed.", transversalState.username))
+        logger.info(ToposoidUtils.formatMessageForLogger("Parsing completed.", transversalState.userId))
         Ok(Json.toJson(result)).as(JSON)
       }
     }catch{
       case e: Exception => {
-        logger.error(ToposoidUtils.formatMessageForLogger(e.toString, transversalState.username), e)
+        logger.error(ToposoidUtils.formatMessageForLogger(e.toString, transversalState.userId), e)
         BadRequest(Json.obj("status" ->"Error", "message" -> e.toString()))
       }
     }
@@ -75,7 +75,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     try {
       val json = request.body
       val singleSentence:SingleSentence = Json.parse(json.toString).as[SingleSentence]
-      logger.info(ToposoidUtils.formatMessageForLogger("SENTENCE:" + singleSentence.sentence, transversalState.username))
+      logger.info(ToposoidUtils.formatMessageForLogger("SENTENCE:" + singleSentence.sentence, transversalState.userId))
       val knowledge:Knowledge = Knowledge(sentence = singleSentence.sentence, lang = "ja_JP", extentInfoJson = "{}", isNegativeSentence = false)
       val knowledgeForParser:List[KnowledgeForParser] = List(knowledge).map(x => KnowledgeForParser(propositionId = "", sentenceId = "", knowledge = x))
       val asos = this.setData(knowledgeForParser, CLAIM.index).analyzedSentenceObjects
@@ -84,11 +84,11 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       val surfaceInfoList:List[SurfaceInfo] = predicateArgumentStructures.filter(x => {
         x.morphemes.filter(y => y.contains("名詞")).size > 0
       }).map(y => SurfaceInfo(y.surface, y.currentId))
-      logger.info(ToposoidUtils.formatMessageForLogger("Splitting completed." + surfaceInfoList.mkString(","), transversalState.username))
+      logger.info(ToposoidUtils.formatMessageForLogger("Splitting completed." + surfaceInfoList.mkString(","), transversalState.userId))
       Ok(Json.toJson(surfaceInfoList.reverse)).as(JSON)
     } catch {
       case e: Exception => {
-        logger.error(ToposoidUtils.formatMessageForLogger(e.toString, transversalState.username), e)
+        logger.error(ToposoidUtils.formatMessageForLogger(e.toString, transversalState.userId), e)
         BadRequest(Json.obj("status" -> "Error", "message" -> e.toString()))
       }
     }
