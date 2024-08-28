@@ -49,8 +49,8 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     try {
       val json = request.body
       val inputSentenceForParser: InputSentenceForParser = Json.parse(json.toString).as[InputSentenceForParser]
-      logger.info(ToposoidUtils.formatMessageForLogger("PREMISE:" + inputSentenceForParser.premise.map(_.knowledge.sentence).mkString(","), transversalState.username))
-      logger.info(ToposoidUtils.formatMessageForLogger("CLAIM:" + inputSentenceForParser.claim.map(_.knowledge.sentence).mkString(","), transversalState.username))
+      logger.info(ToposoidUtils.formatMessageForLogger("PREMISE:" + inputSentenceForParser.premise.map(_.knowledge.sentence).mkString(","), transversalState.userId))
+      logger.info(ToposoidUtils.formatMessageForLogger("CLAIM:" + inputSentenceForParser.claim.map(_.knowledge.sentence).mkString(","), transversalState.userId))
       if(inputSentenceForParser.premise.size > 0 && inputSentenceForParser.claim.size  == 0){
         BadRequest(Json.obj("status" ->"Error", "message" -> "It is not possible to register only as a prerequisite. If you have any premises, please also register a claim."))
       }else{
