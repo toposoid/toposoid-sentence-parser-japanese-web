@@ -16,14 +16,17 @@
 
 package controllers
 
-import com.ideal.linked.toposoid.common.{CLAIM, PREMISE, TransversalState, TRANSVERSAL_STATE}
+import com.ideal.linked.toposoid.common.{CLAIM, PREMISE, TRANSVERSAL_STATE, TransversalState}
+import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
 import com.ideal.linked.toposoid.protocol.model.base.AnalyzedSentenceObjects
+import com.ideal.linked.toposoid.protocol.model.parser.{InputSentenceForParser, KnowledgeForParser}
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api.Play.materializer
 import play.api.libs.json.Json
 import play.api.test._
 import play.api.test.Helpers._
+import io.jvm.uuid.UUID
 
 /**
  * Add your spec here.
@@ -34,18 +37,16 @@ import play.api.test.Helpers._
 class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting {
 
   val transversalState:String = Json.toJson(TransversalState(userId="test-user", username="guest", roleId=0, csrfToken = "")).toString()
-  
+
+
+
   "HomeController POST(sentence is empty)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
-      val jsonStr:String = """{
-                             |    "premise":[],
-                             |    "claim":[]
-                             |}
-                             |""".stripMargin
+      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List.empty[KnowledgeForParser])
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
-        .withJsonBody(Json.parse(jsonStr))
+        .withJsonBody(Json.toJson(input))
       val result= call(controller.analyze(), fr)
       status(result) mustBe OK
       val jsonResult:String = contentAsJson(result).toString()
@@ -57,15 +58,12 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
   "HomeController POST(single sentence in premise)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
-      val jsonStr: String =
-        """{
-          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}],
-          |    "claim":[]
-          |}
-          |""".stripMargin
+      val knowledge1 = Knowledge(sentence = "案ずるより産むが易し。", lang = "ja_JP", extentInfoJson = "{}")
+      val premise1 = KnowledgeForParser(propositionId = UUID.random.toString , sentenceId = UUID.random.toString, knowledge = knowledge1)
+      val input = InputSentenceForParser(List(premise1), List.empty[KnowledgeForParser])
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
-        .withJsonBody(Json.parse(jsonStr))
+        .withJsonBody(Json.toJson(input))
       val result = call(controller.analyze(), fr)
       status(result) mustBe BAD_REQUEST
     }
@@ -74,15 +72,14 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
   "HomeController POST(multiple sentence in premise)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
-      val jsonStr: String =
-        """{
-          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}],
-          |    "claim":[]
-          |}
-          |""".stripMargin
+      val knowledge1 = Knowledge(sentence = "案ずるより産むが易し。", lang = "ja_JP", extentInfoJson = "{}")
+      val knowledge2 = Knowledge(sentence = "失敗は成功の基。", lang = "ja_JP", extentInfoJson = "{}")
+      val premise1 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge1)
+      val premise2 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge2)
+      val input = InputSentenceForParser(List(premise1, premise2), List.empty[KnowledgeForParser])
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
-        .withJsonBody(Json.parse(jsonStr))
+        .withJsonBody(Json.toJson(input))
       val result = call(controller.analyze(), fr)
       status(result) mustBe BAD_REQUEST
     }
@@ -92,14 +89,12 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
   "HomeController POST(single sentence in claim)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
-      val jsonStr:String = """{
-                             |    "premise":[],
-                             |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}]
-                             |}
-                             |""".stripMargin
+      val knowledge1 = Knowledge(sentence = "案ずるより産むが易し。", lang = "ja_JP", extentInfoJson = "{}")
+      val claim1 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge1)
+      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List(claim1))
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
-        .withJsonBody(Json.parse(jsonStr))
+        .withJsonBody(Json.toJson(input))
       val result= call(controller.analyze(), fr)
       status(result) mustBe OK
       val jsonResult:String = contentAsJson(result).toString()
@@ -117,15 +112,14 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
   "HomeController POST(multiple sentence in claim)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
-      val jsonStr: String =
-        """{
-          |    "premise":[],
-          |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}]
-          |}
-          |""".stripMargin
+      val knowledge1 = Knowledge(sentence = "案ずるより産むが易し。", lang = "ja_JP", extentInfoJson = "{}")
+      val knowledge2 = Knowledge(sentence = "失敗は成功の基", lang = "ja_JP", extentInfoJson = "{}")
+      val claim1 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge1)
+      val claim2 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge2)
+      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List(claim1, claim2))
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
-        .withJsonBody(Json.parse(jsonStr))
+        .withJsonBody(Json.toJson(input))
       val result = call(controller.analyze(), fr)
       status(result) mustBe OK
       val jsonResult: String = contentAsJson(result).toString()
@@ -146,15 +140,14 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
   "HomeController POST(simple sentence in premise and simple sentence in claim)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
-      val jsonStr: String =
-        """{
-          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}],
-          |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}]
-          |}
-          |""".stripMargin
+      val knowledge1 = Knowledge(sentence = "失敗は成功の基。", lang = "ja_JP", extentInfoJson = "{}")
+      val knowledge2 = Knowledge(sentence = "案ずるより産むが易し。", lang = "ja_JP", extentInfoJson = "{}")
+      val premise1 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge1)
+      val claim1 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge2)
+      val input = InputSentenceForParser(List(premise1), List(claim1))
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
-        .withJsonBody(Json.parse(jsonStr))
+        .withJsonBody(Json.toJson(input))
       val result = call(controller.analyze(), fr)
       status(result) mustBe OK
       val jsonResult: String = contentAsJson(result).toString()
@@ -174,15 +167,20 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
   "HomeController POST(multiple sentence in premise and multiple sentence in claim)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
-      val jsonStr: String =
-        """{
-          |    "premise":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "失敗は成功の基。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "思い立ったが吉日。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}],
-          |    "claim":[{"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "案ずるより産むが易し。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}, {"propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414", "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170", "knowledge": {"sentence": "蓮の台の半座を分かつ。","lang": "ja_JP", "extentInfoJson": "{}", "isNegativeSentence":false, "knowledgeForImages": []}}]
-          |}
-          |""".stripMargin
+      val knowledge1 = Knowledge(sentence = "失敗は成功の基。", lang = "ja_JP", extentInfoJson = "{}")
+      val knowledge2 = Knowledge(sentence = "思い立ったが吉日。", lang = "ja_JP", extentInfoJson = "{}")
+      val knowledge3 = Knowledge(sentence = "案ずるより産むが易し。", lang = "ja_JP", extentInfoJson = "{}")
+      val knowledge4 = Knowledge(sentence = "蓮の台の半座を分かつ。", lang = "ja_JP", extentInfoJson = "{}")
+
+      val premise1 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge1)
+      val premise2 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge2)
+      val claim1 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge3)
+      val claim2 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge4)
+      val input = InputSentenceForParser(List(premise1, premise2), List(claim1, claim2))
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
-        .withJsonBody(Json.parse(jsonStr))
+        .withJsonBody(Json.toJson(input))
+
       val result = call(controller.analyze(), fr)
       status(result) mustBe OK
       val jsonResult: String = contentAsJson(result).toString()
