@@ -15,13 +15,6 @@ RUN apt-get update \
 && sbt publishLocal \
 && rm -Rf ./target \
 && cd .. \
-&& git clone https://github.com/toposoid/toposoid-common.git \
-&& cd toposoid-common \
-&& git fetch origin ${TARGET_BRANCH} \
-&& git checkout ${TARGET_BRANCH} \
-&& sbt publishLocal \
-&& rm -Rf ./target \
-&& cd .. \
 && git clone https://github.com/toposoid/toposoid-knowledgebase-model.git \
 && cd toposoid-knowledgebase-model \
 && git fetch origin ${TARGET_BRANCH} \
@@ -37,6 +30,13 @@ RUN apt-get update \
 && cd .. \
 && git clone https://github.com/toposoid/toposoid-deduction-protocol-model.git \
 && cd toposoid-deduction-protocol-model \
+&& git fetch origin ${TARGET_BRANCH} \
+&& git checkout ${TARGET_BRANCH} \
+&& sbt publishLocal \
+&& rm -Rf ./target \
+&& cd .. \
+&& git clone https://github.com/toposoid/toposoid-common.git \
+&& cd toposoid-common \
 && git fetch origin ${TARGET_BRANCH} \
 && git checkout ${TARGET_BRANCH} \
 && sbt publishLocal \
