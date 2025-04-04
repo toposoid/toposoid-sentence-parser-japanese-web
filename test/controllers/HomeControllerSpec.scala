@@ -205,6 +205,31 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
     }
   }
 
+  "HomeController POST(no-reference-sentence)" should {
+    "returns an appropriate response" in {
+      val controller: HomeController = inject[HomeController]
+      val testSentence = "NO_REFERENCE_" + UUID.random.toString + "_1"
+      val knowledge1 = Knowledge(sentence = testSentence, lang = "ja_JP", extentInfoJson = "{}")
+      val claim1 = KnowledgeForParser(propositionId = UUID.random.toString, sentenceId = UUID.random.toString, knowledge = knowledge1)
+      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List(claim1))
+      val fr = FakeRequest(POST, "/analyze")
+        .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
+        .withJsonBody(Json.toJson(input))
+      val result = call(controller.analyze(), fr)
+      status(result) mustBe OK
+      val jsonResult: String = contentAsJson(result).toString()
+      val asos: AnalyzedSentenceObjects = Json.parse(jsonResult).as[AnalyzedSentenceObjects]
+      assert(asos.analyzedSentenceObjects.size == 1)
+      for (aso <- asos.analyzedSentenceObjects) {
+        assert(aso.knowledgeBaseSemiGlobalNode.sentenceType == CLAIM.index)
+        val sentence: String = aso.nodeMap.map(x => x._2.predicateArgumentStructure.currentId -> x._2).toSeq.sortBy(_._1).foldLeft("") { (acc, x) => acc + x._2.predicateArgumentStructure.surface }
+        assert(sentence.equals(testSentence))
+      }
+
+    }
+  }
+
+
   "HomeController POST(split)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
