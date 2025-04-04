@@ -18,7 +18,7 @@ package controllers
 
 
 import com.ideal.linked.toposoid.common.{CLAIM, PREMISE, TRANSVERSAL_STATE, ToposoidUtils, TransversalState}
-import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeBaseSemiGlobalNode, KnowledgeFeatureReference, LocalContextForFeature, PredicateArgumentStructure}
+import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeBaseSemiGlobalNode, KnowledgeFeatureReference, LocalContext, LocalContextForFeature, PredicateArgumentStructure}
 import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceInfo}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
 import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, CoveredPropositionResult, DeductionResult}
@@ -32,6 +32,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Results.Ok
 import play.api.mvc._
 
+import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -40,6 +41,8 @@ import scala.util.{Failure, Success, Try}
  */
 @Singleton
 class HomeController @Inject()(val controllerComponents: ControllerComponents) extends BaseController  with LazyLogging{
+
+
   /**
    * With json as inputWhen a Japanese natural sentence is requested, the result of predicate argument structure analysis is output as Json.
    * @return
@@ -93,6 +96,80 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       }
     }
   }
+
+  private def parseNoReferenceSentence(knowledgeForParser:KnowledgeForParser):AnalyzedSentenceObject = {
+    val propositionId = knowledgeForParser.propositionId
+    val sentenceId = knowledgeForParser.sentenceId
+    val documentId = knowledgeForParser.knowledge.knowledgeForDocument.id
+
+    val localContext = LocalContext(
+      lang = knowledgeForParser.knowledge.lang,
+      namedEntity = "",
+      rangeExpressions = Map.empty[String, Map[String, String]],
+      categories = Map.empty[String, String],
+      domains = Map.empty[String, String],
+      knowledgeFeatureReferences = List.empty[KnowledgeFeatureReference]
+    )
+
+    val caseType = knowledgeForParser.knowledge.lang match {
+      case "ja_JP" => "文末"
+      case "en_US" => "ROOT"
+      case _ => ""
+    }
+
+    val predicateArgumentStructure = PredicateArgumentStructure(
+      currentId = 0,
+      parentId = -1,
+      isMainSection = true,
+      surface = knowledgeForParser.knowledge.sentence,
+      normalizedName = knowledgeForParser.knowledge.sentence,
+      dependType = "-",
+      caseType = caseType,
+      isDenialWord = false,
+      isConditionalConnection = false,
+      surfaceYomi = "",
+      normalizedNameYomi = "",
+      modalityType = "-",
+      parallelType = "-",
+      nodeType = 1,
+      morphemes = List("-")
+    )
+
+    val node = KnowledgeBaseNode(
+      nodeId = sentenceId + "-0",
+      propositionId = propositionId,
+      sentenceId = sentenceId,
+      predicateArgumentStructure = predicateArgumentStructure,
+      localContext = localContext,
+    )
+    val nodeMap = Map(sentenceId + "-0" -> node)
+
+    val localContextForFeature = LocalContextForFeature(
+      lang = knowledgeForParser.knowledge.lang,
+      knowledgeFeatureReferences = List.empty[KnowledgeFeatureReference]
+    )
+
+    val knowledgeBaseSemiGlobalNode = KnowledgeBaseSemiGlobalNode(
+      sentenceId = sentenceId,
+      propositionId = propositionId,
+      documentId = documentId,
+      sentence = knowledgeForParser.knowledge.sentence,
+      sentenceType = 1,
+      localContextForFeature = localContextForFeature,
+    )
+
+    val defaultDeductionResult = DeductionResult(status = false,
+      coveredPropositionResults = List.empty[CoveredPropositionResult]
+    )
+    AnalyzedSentenceObject(
+      nodeMap = nodeMap,
+      edgeList = List.empty[KnowledgeBaseEdge],
+      knowledgeBaseSemiGlobalNode = knowledgeBaseSemiGlobalNode,
+      deductionResult = defaultDeductionResult
+    )
+  }
+
+
   /**
    * This function sets the result of predicate argument structure analysis to the AnalyzedSentenceObjects type.
    * @param sentences
@@ -103,24 +180,31 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     var asoList = List.empty[AnalyzedSentenceObject]
     for((knowledgeForParser, i) <- knowledgeForParserList.zipWithIndex){
       if (knowledgeForParser.knowledge.sentence != "") {
-        val sentenceObject = SentenceParser.parse(knowledgeForParser)
-        val nodeMap:Map[String, KnowledgeBaseNode] = sentenceObject._1
-        val edgeList:List[KnowledgeBaseEdge] = sentenceObject._2
-        val localContextForFeature:LocalContextForFeature = LocalContextForFeature(
-          knowledgeForParser.knowledge.lang,
-          List.empty[KnowledgeFeatureReference]
-        )
-        val knowledgeBaseSemiGlobalNode:KnowledgeBaseSemiGlobalNode = KnowledgeBaseSemiGlobalNode(
-          knowledgeForParser.sentenceId,
-          knowledgeForParser.propositionId,
-          knowledgeForParser.sentenceId,
-          knowledgeForParser.knowledge.sentence,
-          sentenceType,
-          localContextForFeature
-        )
-
-        val deductionResult:DeductionResult = DeductionResult(false, List.empty[CoveredPropositionResult])
-        val aso = AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResult)
+        val noReferenceRegex:Regex = "^(NO_REFERENCE)_.+_[0-9]+$".r
+        val aso = knowledgeForParser.knowledge.sentence match {
+          case noReferenceRegex(x) => {
+            parseNoReferenceSentence(knowledgeForParser)
+          }
+          case _ => {
+            val sentenceObject = SentenceParser.parse(knowledgeForParser)
+            val nodeMap: Map[String, KnowledgeBaseNode] = sentenceObject._1
+            val edgeList: List[KnowledgeBaseEdge] = sentenceObject._2
+            val localContextForFeature: LocalContextForFeature = LocalContextForFeature(
+              knowledgeForParser.knowledge.lang,
+              List.empty[KnowledgeFeatureReference]
+            )
+            val knowledgeBaseSemiGlobalNode: KnowledgeBaseSemiGlobalNode = KnowledgeBaseSemiGlobalNode(
+              knowledgeForParser.sentenceId,
+              knowledgeForParser.propositionId,
+              knowledgeForParser.sentenceId,
+              knowledgeForParser.knowledge.sentence,
+              sentenceType,
+              localContextForFeature
+            )
+            val deductionResult: DeductionResult = DeductionResult(false, List.empty[CoveredPropositionResult])
+            AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResult)
+          }
+        }
         asoList :+= aso
       }
     }
