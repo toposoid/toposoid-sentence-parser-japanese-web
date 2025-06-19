@@ -96,7 +96,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       }
     }
   }
-
+  /*
   private def parseNoReferenceSentence(knowledgeForParser:KnowledgeForParser):AnalyzedSentenceObject = {
     val propositionId = knowledgeForParser.propositionId
     val sentenceId = knowledgeForParser.sentenceId
@@ -168,7 +168,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       deductionResult = defaultDeductionResult
     )
   }
-
+  */
 
   /**
    * This function sets the result of predicate argument structure analysis to the AnalyzedSentenceObjects type.
@@ -180,6 +180,25 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
     var asoList = List.empty[AnalyzedSentenceObject]
     for((knowledgeForParser, i) <- knowledgeForParserList.zipWithIndex){
       if (knowledgeForParser.knowledge.sentence != "") {
+        val sentenceObject = SentenceParser.parse(knowledgeForParser)
+        val nodeMap: Map[String, KnowledgeBaseNode] = sentenceObject._1
+        val edgeList: List[KnowledgeBaseEdge] = sentenceObject._2
+        val localContextForFeature: LocalContextForFeature = LocalContextForFeature(
+          knowledgeForParser.knowledge.lang,
+          List.empty[KnowledgeFeatureReference]
+        )
+        val knowledgeBaseSemiGlobalNode: KnowledgeBaseSemiGlobalNode = KnowledgeBaseSemiGlobalNode(
+          knowledgeForParser.sentenceId,
+          knowledgeForParser.propositionId,
+          knowledgeForParser.sentenceId,
+          knowledgeForParser.knowledge.sentence,
+          sentenceType,
+          localContextForFeature
+        )
+        val deductionResult: DeductionResult = DeductionResult(false, List.empty[CoveredPropositionResult])
+        asoList :+= AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResult)
+
+        /*
         val noReferenceRegex:Regex = "^(NO_REFERENCE)_.+_[0-9]+$".r
         val aso = knowledgeForParser.knowledge.sentence match {
           case noReferenceRegex(x) => {
@@ -206,6 +225,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
           }
         }
         asoList :+= aso
+        */
       }
     }
     AnalyzedSentenceObjects(asoList)

@@ -204,7 +204,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       }
     }
   }
-
+  /*
   "HomeController POST(no-reference-sentence)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
@@ -228,7 +228,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
 
     }
   }
-
+  */
 
   "HomeController POST(split)" should {
     "returns an appropriate response" in {
