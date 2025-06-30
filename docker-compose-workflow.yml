@@ -5,4 +5,7 @@ services:
     tty: true
     environment:
       - PRIVATE_IP_ADDRESS=toposoid-sentence-parser-japanese-web
+      - TOPOSOID_JVM_XMS=512m
+      - TOPOSOID_JVM_XMX=1g
+      - TOPOSOID_JVM_XSS=512k
       - PLAY_HTTP_PORT=9001

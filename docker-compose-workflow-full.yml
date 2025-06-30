@@ -1,8 +1,0 @@
-version: '3'
-services:
-  toposoid-sentence-parser-japanese-web:
-    image: toposoid-sentence-parser-japanese-web:0.6-SNAPSHOT
-    tty: true
-    environment:
-      - PRIVATE_IP_ADDRESS=toposoid-sentence-parser-japanese-web
-      - PLAY_HTTP_PORT=9001
