@@ -5,7 +5,7 @@ This Microservice analyzes the predicate argument structure of Japanese sentence
 
 [![Unit Test And Build Image Action](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml/badge.svg?branch=main)](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml)
 
-<img width="1160"  src="https://github.com/toposoid/toposoid-sentence-parser-japanese-web/assets/82787843/dc81f017-d833-4190-8a99-ab18fba6bac2">
+<img width="1069" alt="Image" src="https://github.com/user-attachments/assets/4c0a2b69-1ca7-4824-80f2-b47186e640b5" />
 
 
 ## Requirements
