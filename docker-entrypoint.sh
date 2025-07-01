@@ -17,6 +17,6 @@ else
   _JAVA_OPTIONS="$_JAVA_OPTIONS -Xss512k "
 fi
 
-echo $_JAVA_OPTIONS
+export _JAVA_OPTIONS=$_JAVA_OPTIONS
 cd /app/toposoid-sentence-parser-japanese-web/target/universal
 toposoid-sentence-parser-japanese-web-0.6-SNAPSHOT/bin/toposoid-sentence-parser-japanese-web
