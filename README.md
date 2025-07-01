@@ -24,21 +24,34 @@ The first startup takes a long time until docker pull finishes.
 
 ## Usage
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{
-    "premise": [],
-    "claim": [
-        {
-            "propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414",
-            "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170",
-            "knowledge": {
-                "sentence": "案ずるより産むが易し。",
-                "lang": "ja_JP",
-                "extentInfoJson": "{}",
-                "isNegativeSentence": false,
-                "knowledgeForImages": []
-            }
+curl -X POST -H "Content-Type: application/json" -H 'X_TOPOSOID_TRANSVERSAL_STATE: {"userId":"test-user", "username":"guest", "roleId":0, "csrfToken":""}' -d '{
+  "premise": [],
+  "claim": [
+    {
+      "propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414",
+      "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170",
+      "knowledge": {
+        "sentence": "案ずるより産むが易し。",
+        "lang": "ja_JP",
+        "extentInfoJson": "{}",
+        "isNegativeSentence": false,
+        "knowledgeForImages": [],
+        "knowledgeForTables": [],
+        "knowledgeForDocument": {
+          "id": "",
+          "filename": "",
+          "url": "",
+          "titleOfTopPage": ""
+        },
+        "documentPageReference": {
+          "pageNo": -1,
+          "references": [],
+          "tableOfContents": [],
+          "headlines": []
         }
-    ]
+      }
+    }
+  ]
 }' http://localhost:9001/analyze
 ```
 Currently, isNegativeSentence is always set to false when registering data.
