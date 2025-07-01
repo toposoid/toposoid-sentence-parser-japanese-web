@@ -1,4 +1,3 @@
-import Dependencies._
 import de.heikoseeberger.sbtheader.License
 
 name := """toposoid-sentence-parser-japanese-web"""
@@ -17,7 +16,7 @@ libraryDependencies += "com.ideal.linked" %% "toposoid-knowledgebase-model" % "0
 libraryDependencies += "com.ideal.linked" %% "toposoid-deduction-protocol-model" % "0.6-SNAPSHOT"
 libraryDependencies += "com.ideal.linked" %% "toposoid-sentence-parser-japanese" % "0.6-SNAPSHOT"
 libraryDependencies += "io.jvm.uuid" %% "scala-uuid" % "0.3.1"
-libraryDependencies += scalaTest % Test
+libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
 
 organizationName := "Linked Ideal LLC.[https://linked-ideal.com/]"
 startYear := Some(2021)
