@@ -5,7 +5,7 @@ This Microservice analyzes the predicate argument structure of Japanese sentence
 
 [![Unit Test And Build Image Action](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml/badge.svg?branch=main)](https://github.com/toposoid/toposoid-sentence-parser-web/actions/workflows/action.yml)
 
-<img width="1160"  src="https://github.com/toposoid/toposoid-sentence-parser-japanese-web/assets/82787843/dc81f017-d833-4190-8a99-ab18fba6bac2">
+<img width="1069" alt="Image" src="https://github.com/user-attachments/assets/4c0a2b69-1ca7-4824-80f2-b47186e640b5" />
 
 
 ## Requirements
@@ -24,21 +24,34 @@ The first startup takes a long time until docker pull finishes.
 
 ## Usage
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{
-    "premise": [],
-    "claim": [
-        {
-            "propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414",
-            "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170",
-            "knowledge": {
-                "sentence": "案ずるより産むが易し。",
-                "lang": "ja_JP",
-                "extentInfoJson": "{}",
-                "isNegativeSentence": false,
-                "knowledgeForImages": []
-            }
+curl -X POST -H "Content-Type: application/json" -H 'X_TOPOSOID_TRANSVERSAL_STATE: {"userId":"test-user", "username":"guest", "roleId":0, "csrfToken":""}' -d '{
+  "premise": [],
+  "claim": [
+    {
+      "propositionId": "612bf3d6-bdb5-47b9-a3a6-185015c8c414",
+      "sentenceId": "4a2994a1-ec7a-438b-a290-0cfb563a5170",
+      "knowledge": {
+        "sentence": "案ずるより産むが易し。",
+        "lang": "ja_JP",
+        "extentInfoJson": "{}",
+        "isNegativeSentence": false,
+        "knowledgeForImages": [],
+        "knowledgeForTables": [],
+        "knowledgeForDocument": {
+          "id": "",
+          "filename": "",
+          "url": "",
+          "titleOfTopPage": ""
+        },
+        "documentPageReference": {
+          "pageNo": -1,
+          "references": [],
+          "tableOfContents": [],
+          "headlines": []
         }
-    ]
+      }
+    }
+  ]
 }' http://localhost:9001/analyze
 ```
 Currently, isNegativeSentence is always set to false when registering data.
@@ -49,7 +62,23 @@ Currently, isNegativeSentence is always set to false when registering data.
 * The meaning of premise is a premise as a proposition, and it corresponds to A of A → B in a logical formula. Therefore, it is set when there is a condition for the claim. Unless there are special conditions, it is not necessary to set the premise.
 
 ## License
-toposoid/toposoid-sentence-parser-japanese-web is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
+This program is offered under a commercial and under the AGPL license.
+For commercial licensing, contact us at https://toposoid.com/contact.  For AGPL licensing, see below.
+
+AGPL licensing:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 
 ## Author
 * Makoto Kubodera([Linked Ideal LLC.](https://linked-ideal.com/))
