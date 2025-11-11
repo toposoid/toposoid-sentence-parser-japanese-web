@@ -35,6 +35,7 @@ import play.api.mvc._
 
 import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
+import play.api.libs.json.JsValue
 
 /**
  * This controller creates an `Action` to analyzes the predicate argument structure of Japanese natural sentences.
@@ -48,7 +49,8 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
    * With json as inputWhen a Japanese natural sentence is requested, the result of predicate argument structure analysis is output as Json.
    * @return
    */
-  def analyze()  = Action(parse.json) { request =>
+  def analyze():Action[JsValue]  = Action(parse.json[JsValue]) { request =>
+    
     val transversalState = Json.parse(request.headers.get(TRANSVERSAL_STATE .str).get).as[TransversalState]
     try {
       val json = request.body
@@ -74,7 +76,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
    * input Text from frontend
    * @return the surface part of the predicate structure analysis result
    */
-  def split() = Action(parse.json) { request =>
+  def split():Action[JsValue] = Action(parse.json[JsValue]) { request =>
     val transversalState = Json.parse(request.headers.get(TRANSVERSAL_STATE .str).get).as[TransversalState]
     try {
       val json = request.body
