@@ -8,3 +8,7 @@ target
 /.settings
 /RUNNING_PID
 .DS_Store
+.metals/
+.vscode/
+project/metals.sbt
+project/project/
