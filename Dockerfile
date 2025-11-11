@@ -11,7 +11,7 @@ ENV DEPLOYMENT=local
 ENV _JAVA_OPTIONS="-Xms2g -Xmx4g"
 
 RUN apt-get update \
-&& apt-get -y install git \
+&& apt-get -y install git unzip \
 && git clone https://github.com/toposoid/scala-juman-knp.git \
 && cd scala-juman-knp \
 && git checkout scala-3.3.6-knp-5.0-support  \
