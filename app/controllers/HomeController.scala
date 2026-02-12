@@ -18,7 +18,8 @@
 package controllers
 
 
-import com.ideal.linked.toposoid.common.{CLAIM, PREMISE, TRANSVERSAL_STATE, ToposoidUtils, TransversalState}
+import com.ideal.linked.toposoid.common.{TRANSVERSAL_STATE, ToposoidUtils, TransversalState}
+import com.ideal.linked.toposoid.common.SentenceType
 import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeBaseSemiGlobalNode, KnowledgeFeatureReference, LocalContext, LocalContextForFeature, PredicateArgumentStructure}
 import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceInfo}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
@@ -60,7 +61,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       if(inputSentenceForParser.premise.size > 0 && inputSentenceForParser.claim.size  == 0){
         BadRequest(Json.obj("status" ->"Error", "message" -> "It is not possible to register only as a prerequisite. If you have any premises, please also register a claim."))
       }else{
-        val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(inputSentenceForParser.premise, PREMISE.index).analyzedSentenceObjects ::: this.setData(inputSentenceForParser.claim, CLAIM.index).analyzedSentenceObjects)
+        val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(inputSentenceForParser.premise, SentenceType.PREMISE.index).analyzedSentenceObjects ::: this.setData(inputSentenceForParser.claim, SentenceType.CLAIM.index).analyzedSentenceObjects)
         logger.info(ToposoidUtils.formatMessageForLogger("Parsing completed.", transversalState.userId))
         Ok(Json.toJson(result)).as(JSON)
       }
@@ -84,7 +85,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       logger.info(ToposoidUtils.formatMessageForLogger("SENTENCE:" + singleSentence.sentence, transversalState.userId))
       val knowledge:Knowledge = Knowledge(sentence = singleSentence.sentence, lang = "ja_JP", extentInfoJson = "{}", isNegativeSentence = false)
       val knowledgeForParser:List[KnowledgeForParser] = List(knowledge).map(x => KnowledgeForParser(propositionId = "", sentenceId = "", knowledge = x))
-      val asos = this.setData(knowledgeForParser, CLAIM.index).analyzedSentenceObjects
+      val asos = this.setData(knowledgeForParser, SentenceType.CLAIM.index).analyzedSentenceObjects
 
       val predicateArgumentStructures:List[PredicateArgumentStructure] = asos.map(_.nodeMap.map(_._2.predicateArgumentStructure)).flatten
       val surfaceInfoList:List[SurfaceInfo] = predicateArgumentStructures.filter(x => {
