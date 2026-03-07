@@ -2,21 +2,22 @@ import de.heikoseeberger.sbtheader.License
 
 name := """toposoid-sentence-parser-japanese-web"""
 organization := "com.linked.ideal"
+scalaVersion := "3.3.6"
 
 version := "0.7-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala).enablePlugins(AutomateHeaderPlugin)
-//resolvers += Resolver.mavenLocal
-scalaVersion := "3.3.6"
-
 libraryDependencies += guice
-libraryDependencies += "com.ideal.linked" %% "scala-common" % "0.7-SNAPSHOT"
-libraryDependencies += "com.ideal.linked" %% "toposoid-common" % "0.7-SNAPSHOT"
-libraryDependencies += "com.ideal.linked" %% "toposoid-knowledgebase-model" % "0.7-SNAPSHOT"
-libraryDependencies += "com.ideal.linked" %% "toposoid-deduction-protocol-model" % "0.7-SNAPSHOT"
-libraryDependencies += "com.ideal.linked" %% "toposoid-sentence-parser-japanese" % "0.7-SNAPSHOT"
-//libraryDependencies += "io.jvm.uuid" %% "scala-uuid" % "0.3.1"
-libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.2" % Test
+libraryDependencies += "com.ideal.linked" %% "scala-common" % "0.7-SNAPSHOT" exclude("org.slf4j","slf4j-api")
+libraryDependencies += "com.ideal.linked" %% "toposoid-common" % "0.7-SNAPSHOT" exclude("org.slf4j","slf4j-api")
+libraryDependencies += "com.ideal.linked" %% "toposoid-knowledgebase-model" % "0.7-SNAPSHOT" exclude("org.slf4j","slf4j-api")
+libraryDependencies += "com.ideal.linked" %% "toposoid-deduction-protocol-model" % "0.7-SNAPSHOT" exclude("org.slf4j","slf4j-api")
+libraryDependencies += "com.ideal.linked" %% "toposoid-sentence-parser-japanese" % "0.7-SNAPSHOT" exclude("org.slf4j","slf4j-api")
+libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "7.0.2" % Test exclude("org.slf4j","slf4j-api")
+libraryDependencies += "org.apache.pekko" %% "pekko-slf4j" % "1.1.5" exclude("org.slf4j","slf4j-api")
+libraryDependencies += "org.apache.pekko" %% "pekko-serialization-jackson" % "1.1.5" exclude("org.slf4j","slf4j-api")
+libraryDependencies += "org.apache.pekko" %% "pekko-actor-typed" % "1.1.5" exclude("org.slf4j","slf4j-api")
+libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.36" 
 organizationName := "Linked Ideal LLC.[https://linked-ideal.com/]"
 startYear := Some(2021)
 licenses += ("AGPL-3.0-or-later", url("http://www.gnu.org/licenses/agpl-3.0.en.html"))

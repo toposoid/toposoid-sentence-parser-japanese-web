@@ -18,8 +18,7 @@
 package controllers
 
 
-import com.ideal.linked.toposoid.common.{TRANSVERSAL_STATE, ToposoidUtils, TransversalState}
-import com.ideal.linked.toposoid.common.SentenceType
+import com.ideal.linked.toposoid.common.{TRANSVERSAL_STATE, ToposoidUtils, TransversalState, SentenceType, ActionModeType}
 import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeBaseSemiGlobalNode, KnowledgeFeatureReference, LocalContext, LocalContextForFeature, PredicateArgumentStructure}
 import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceInfo}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
@@ -37,6 +36,7 @@ import play.api.mvc._
 import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 import play.api.libs.json.JsValue
+import com.ideal.linked.toposoid.protocol.model.base.DeductionConfiguration
 
 /**
  * This controller creates an `Action` to analyzes the predicate argument structure of Japanese natural sentences.
@@ -61,7 +61,8 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       if(inputSentenceForParser.premise.size > 0 && inputSentenceForParser.claim.size  == 0){
         BadRequest(Json.obj("status" ->"Error", "message" -> "It is not possible to register only as a prerequisite. If you have any premises, please also register a claim."))
       }else{
-        val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(inputSentenceForParser.premise, SentenceType.PREMISE.index).analyzedSentenceObjects ::: this.setData(inputSentenceForParser.claim, SentenceType.CLAIM.index).analyzedSentenceObjects)
+        val deductionCofiguration = DeductionConfiguration(inputSentenceForParser.actionModeType, "", Map.empty[String,String])      
+        val result:AnalyzedSentenceObjects = AnalyzedSentenceObjects(this.setData(inputSentenceForParser.premise, SentenceType.PREMISE.index) ::: this.setData(inputSentenceForParser.claim, SentenceType.CLAIM.index), deductionCofiguration)
         logger.info(ToposoidUtils.formatMessageForLogger("Parsing completed.", transversalState.userId))
         Ok(Json.toJson(result)).as(JSON)
       }
@@ -85,7 +86,9 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
       logger.info(ToposoidUtils.formatMessageForLogger("SENTENCE:" + singleSentence.sentence, transversalState.userId))
       val knowledge:Knowledge = Knowledge(sentence = singleSentence.sentence, lang = "ja_JP", extentInfoJson = "{}", isNegativeSentence = false)
       val knowledgeForParser:List[KnowledgeForParser] = List(knowledge).map(x => KnowledgeForParser(propositionId = "", sentenceId = "", knowledge = x))
-      val asos = this.setData(knowledgeForParser, SentenceType.CLAIM.index).analyzedSentenceObjects
+      
+      val deductionCofiguration = DeductionConfiguration(ActionModeType.UNSPECIFIED.index, "", Map.empty[String,String]) 
+      val asos = this.setData(knowledgeForParser, SentenceType.CLAIM.index)
 
       val predicateArgumentStructures:List[PredicateArgumentStructure] = asos.map(_.nodeMap.map(_._2.predicateArgumentStructure)).flatten
       val surfaceInfoList:List[SurfaceInfo] = predicateArgumentStructures.filter(x => {
@@ -180,7 +183,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
    * @param sentenceType
    * @return
    */
-  private def setData(knowledgeForParserList:List[KnowledgeForParser], sentenceType:Int):AnalyzedSentenceObjects = Try{
+  private def setData(knowledgeForParserList:List[KnowledgeForParser], sentenceType:Int):List[AnalyzedSentenceObject] = Try{
     var asoList = List.empty[AnalyzedSentenceObject]
     for((knowledgeForParser, i) <- knowledgeForParserList.zipWithIndex){
       if (knowledgeForParser.knowledge.sentence != "") {
@@ -232,7 +235,8 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
         */
       }
     }
-    AnalyzedSentenceObjects(asoList)
+    //AnalyzedSentenceObjects(asoList)
+    asoList
   }match {
     case Success(s) => s
     case Failure(e) => throw e
