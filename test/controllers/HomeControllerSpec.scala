@@ -17,7 +17,7 @@
 
 package controllers
 
-import com.ideal.linked.toposoid.common.{TRANSVERSAL_STATE, TransversalState}
+import com.ideal.linked.toposoid.common.{TRANSVERSAL_STATE, TransversalState, ActionModeType}
 import com.ideal.linked.toposoid.common.SentenceType
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
 import com.ideal.linked.toposoid.protocol.model.base.AnalyzedSentenceObjects
@@ -43,7 +43,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
   "HomeController POST(sentence is empty)" should {
     "returns an appropriate response" in {
       val controller: HomeController = inject[HomeController]
-      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List.empty[KnowledgeForParser])
+      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List.empty[KnowledgeForParser], ActionModeType.UNSPECIFIED.index)
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.toJson(input))
@@ -60,7 +60,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val knowledge1 = Knowledge(sentence = "案ずるより産むが易し。", lang = "ja_JP", extentInfoJson = "{}")
       val premise1 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString , sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge1)
-      val input = InputSentenceForParser(List(premise1), List.empty[KnowledgeForParser])
+      val input = InputSentenceForParser(List(premise1), List.empty[KnowledgeForParser], ActionModeType.UNSPECIFIED.index)
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.toJson(input))
@@ -76,7 +76,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val knowledge2 = Knowledge(sentence = "失敗は成功の基。", lang = "ja_JP", extentInfoJson = "{}")
       val premise1 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge1)
       val premise2 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge2)
-      val input = InputSentenceForParser(List(premise1, premise2), List.empty[KnowledgeForParser])
+      val input = InputSentenceForParser(List(premise1, premise2), List.empty[KnowledgeForParser], ActionModeType.UNSPECIFIED.index)
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.toJson(input))
@@ -91,7 +91,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val controller: HomeController = inject[HomeController]
       val knowledge1 = Knowledge(sentence = "案ずるより産むが易し。", lang = "ja_JP", extentInfoJson = "{}")
       val claim1 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge1)
-      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List(claim1))
+      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List(claim1), ActionModeType.UNSPECIFIED.index)
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.toJson(input))
@@ -116,7 +116,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val knowledge2 = Knowledge(sentence = "失敗は成功の基", lang = "ja_JP", extentInfoJson = "{}")
       val claim1 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge1)
       val claim2 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge2)
-      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List(claim1, claim2))
+      val input = InputSentenceForParser(List.empty[KnowledgeForParser], List(claim1, claim2), ActionModeType.UNSPECIFIED.index)
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.toJson(input))
@@ -144,7 +144,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val knowledge2 = Knowledge(sentence = "案ずるより産むが易し。", lang = "ja_JP", extentInfoJson = "{}")
       val premise1 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge1)
       val claim1 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge2)
-      val input = InputSentenceForParser(List(premise1), List(claim1))
+      val input = InputSentenceForParser(List(premise1), List(claim1), ActionModeType.UNSPECIFIED.index)
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.toJson(input))
@@ -176,7 +176,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting
       val premise2 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge2)
       val claim1 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge3)
       val claim2 = KnowledgeForParser(propositionId = java.util.UUID.randomUUID().toString, sentenceId = java.util.UUID.randomUUID().toString, knowledge = knowledge4)
-      val input = InputSentenceForParser(List(premise1, premise2), List(claim1, claim2))
+      val input = InputSentenceForParser(List(premise1, premise2), List(claim1, claim2), ActionModeType.UNSPECIFIED.index)
       val fr = FakeRequest(POST, "/analyze")
         .withHeaders("Content-type" -> "application/json", TRANSVERSAL_STATE.str -> transversalState)
         .withJsonBody(Json.toJson(input))
