@@ -37,6 +37,8 @@ import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 import play.api.libs.json.JsValue
 import com.ideal.linked.toposoid.protocol.model.base.DeductionConfiguration
+import com.ideal.linked.toposoid.common.AuthenticityType
+import com.ideal.linked.toposoid.protocol.model.base.KnowledgeBaseSideInfo
 
 /**
  * This controller creates an `Action` to analyzes the predicate argument structure of Japanese natural sentences.
@@ -202,7 +204,11 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
           sentenceType,
           localContextForFeature
         )
-        val deductionResult: DeductionResult = DeductionResult(false, List.empty[CoveredPropositionResult])
+        val deductionResult: DeductionResult = DeductionResult(
+          false, 
+          AuthenticityType.UNKNOWN.index,
+          List.empty[CoveredPropositionResult],
+          List.empty[KnowledgeBaseSideInfo])
         asoList :+= AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResult)
 
         /*
