@@ -22,7 +22,7 @@ import com.ideal.linked.toposoid.common.{TRANSVERSAL_STATE, ToposoidUtils, Trans
 import com.ideal.linked.toposoid.knowledgebase.model.{KnowledgeBaseEdge, KnowledgeBaseNode, KnowledgeBaseSemiGlobalNode, KnowledgeFeatureReference, LocalContext, LocalContextForFeature, PredicateArgumentStructure}
 import com.ideal.linked.toposoid.knowledgebase.nlp.model.{SingleSentence, SurfaceInfo}
 import com.ideal.linked.toposoid.knowledgebase.regist.model.Knowledge
-import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, CoveredPropositionResult, DeductionResult}
+import com.ideal.linked.toposoid.protocol.model.base.{AnalyzedSentenceObject, AnalyzedSentenceObjects, DeductionResult}
 import com.ideal.linked.toposoid.protocol.model.parser.{InputSentenceForParser, KnowledgeForParser}
 import com.ideal.linked.toposoid.sentence.parser.japanese.SentenceParser
 import com.typesafe.scalalogging.LazyLogging
@@ -39,6 +39,7 @@ import play.api.libs.json.JsValue
 import com.ideal.linked.toposoid.protocol.model.base.DeductionConfiguration
 import com.ideal.linked.toposoid.common.AuthenticityType
 import com.ideal.linked.toposoid.protocol.model.base.KnowledgeBaseSideInfo
+import com.ideal.linked.toposoid.protocol.model.base.CoveredPropositionEdge
 
 /**
  * This controller creates an `Action` to analyzes the predicate argument structure of Japanese natural sentences.
@@ -207,7 +208,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
         val deductionResult: DeductionResult = DeductionResult(
           false, 
           AuthenticityType.UNKNOWN.index,
-          List.empty[CoveredPropositionResult],
+          List.empty[CoveredPropositionEdge],
           List.empty[KnowledgeBaseSideInfo])
         asoList :+= AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResult)
 
