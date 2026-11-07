@@ -207,7 +207,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
         )
         val deductionResult: DeductionResult = DeductionResult(
           false, 
-          AuthenticityType.UNKNOWN.index,
+          AuthenticityType.INSUFFICIENT.index,
           List.empty[CoveredPropositionEdge],
           List.empty[KnowledgeBaseSideInfo])
         asoList :+= AnalyzedSentenceObject(nodeMap, edgeList, knowledgeBaseSemiGlobalNode, deductionResult)
