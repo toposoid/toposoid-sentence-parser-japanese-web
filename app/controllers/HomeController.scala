@@ -206,7 +206,6 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
           localContextForFeature
         )
         val deductionResult: DeductionResult = DeductionResult(
-          false, 
           AuthenticityType.INSUFFICIENT.index,
           List.empty[CoveredPropositionEdge],
           List.empty[KnowledgeBaseSideInfo])
